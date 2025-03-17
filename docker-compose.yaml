@@ -1,0 +1,117 @@
+
+# REQUIREMENTS =============================================================================================================
+
+# in order for this docker-compose file to work you will require the following docker images
+# - sterren642/rosbox:desktop-latest
+# - mysql:latest
+# - php:8.2-apache
+# These will be pulled automatically from dockerhub if you're connected to the internet
+# and you're docker engine is running
+# and you will require the following docker file which should be located relative to this file at
+# ./general_api_pe/Dockerfile
+
+# further on you will have to have to clone the following git repositories from our organisation  
+# - general_api_pe
+# - bsu_website
+# - bsu_warehouse_database
+
+# you will also have to make a "ros_ws" folder which contains a source folde called "src"
+# inside this "/ros_ws/src" folder you can clone from github all the ROS2 packages 
+# we have already created from our organisation such as:
+# - jetracer_description [REQUIRED : in developement]
+# - jetank_description [REQUIRED : in developement]
+# - robot_gz_startup [REQUIRED : in developement]
+# - robot_teleop [OPTIONAL : in developement/production]
+# - jetracer_controller [REQUIRED : in production]
+# - ...
+
+
+# this means that you will have the following file structure:
+# -/docker-compose.yaml
+# -/general_api_pe/
+#         /- Dockerfile
+#         /- ... 
+# ./bsu_website/
+#         /- index.html
+#         /- ...
+# ./bsu_warehouse_database/
+#         /- init.sql
+#         /- ...
+
+# finally run the command "docker-compose up" to start up  all  docker containers 
+
+# REQUIREMENTS =============================================================================================================
+
+# notice how the "bsu-ros-server" container is not showing any activity it is still up  but you need to enter it by 
+# using "docker exec -it  bsu-server-ros bash" command in your terminal
+
+services:
+  # most containers we're running here down below are already running a program/service/application but the first one 
+  # here isn't so we use the "sh -c sleep infinity" command to keep the docker container running in the background.
+  # to enter the container instead of running "docker start -it bsu-server-ros" you run "docker exec -it  bsu-server-ros bash"
+  # the "exec" executes a command (here "bash") and with the -i and -t flags enabled it will create a intactive teminal session
+  bsu-ros-server:
+    image: sterren642/rosbox:desktop-latest
+    container_name: bsu-server-ros
+    command: [ "sh", "-c", "sleep infinity" ]
+    expose:
+      - 8003 
+    ports:
+      - 8003:8003
+    volumes:
+      - ./ros_ws:/home/ubuntu/ros_ws
+    
+  # MYSQL_DATABASE == is the name of the database notice how in the "bsu-api-server" container we
+  # define the DATABASE_URL it contains the MYSQL_DATABASE at the end of the string 
+  # other environment variables include:
+  # - MYSQL_ROOT_HOST which is set to '%' which means to allow connecting from any address
+  # - MYSQL_ROOT_PASSWORD speaks for itself
+  # - MYSQL_PASSWORD speaks for itself
+  # - MYSQL_ROOT name of the root user (additional users are specified in the ./bsu_warehouse_database/init.sql file)
+  bsu-db-server:
+    image: mysql:latest
+    container_name: bsu-server-db
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=pwdAIteamDB_rootSUDOuser
+      - MYSQL_PASSWORD=pwdAIteamDB
+      - MYSQL_USER=aiUser
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_DATABASE=bsu_warehouse_db
+    volumes:
+      - ./bsu_warehouse_database:/docker-entrypoint-initdb.d
+
+  # the DATABASE_URL environment variable is set so that if required we can load it in using the os.getenv("...") python function
+  # right now we have set it manually in the "./general_api_pe/config.py" file.
+  # further on a volume is attached to the container which is mapped to the root folder of the ./genral_api_pefor enabling the --reload of the API server each time a change occures.
+  # while this feature is good in developement to test out your API endpoints with a other service without having to reset your docker containers each time, it is NOT a good thing
+  # in production.
+  bsu-api-server:
+    build: ./general_api_pe
+    container_name: bsu-server-api
+    volumes:
+      - ./general_api_pe:/app
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+    environment:
+      - DATABASE_URL=mysql://aiUser:pwdAIteamDB@bsu-db-server:3306/bsu_warehouse_db
+    depends_on:
+      - bsu-db-server
+
+  # we map a volume from our folder ./bsu_website to the /var/www/html folder because apache expects it to be there 
+  # see the docs 
+  bsu-website:
+    image: php:8.2-apache
+    container_name: bsu-website
+    volumes:
+      - ./bsu_website:/var/www/html
+    expose:
+      - 80
+    ports:
+      - 8002:80
+
