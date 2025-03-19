@@ -43,13 +43,14 @@
 # REQUIREMENTS =============================================================================================================
 
 # notice how the "bsu-ros-server" container is not showing any activity it is still up  but you need to enter it by 
-# using "docker exec -it  bsu-server-ros bash" command in your terminal
+# using "docker exec -it DISPLAY=:0 bsu-server-ros bash" command in your terminal
 
 services:
   # most containers we're running here down below are already running a program/service/application but the first one 
   # here isn't so we use the "sh -c sleep infinity" command to keep the docker container running in the background.
-  # to enter the container instead of running "docker start -it bsu-server-ros" you run "docker exec -it  bsu-server-ros bash"
-  # the "exec" executes a command (here "bash") and with the -i and -t flags enabled it will create a intactive teminal session
+  # to enter the container instead of running "docker start -it bsu-server-ros" you run "docker exec -it DISPLAY=:0  bsu-server-ros bash"
+  # the "exec" executes a command (here "bash") and with the -i and -t flags enabled it will create a interactive terminal session
+  # the DISPLAY is a env variable which enables the container to access the host display
   bsu-ros-server:
     image: sterren642/rosbox:desktop-latest
     container_name: bsu-server-ros
@@ -60,6 +61,8 @@ services:
       - 8003:8003
     volumes:
       - ./ros_ws:/home/ubuntu/ros_ws
+      - /run/desktop/mnt/host/wslg/.X11-unix:/tmp/.X11-unix
+      - /dev:/dev
     
   # MYSQL_DATABASE == is the name of the database notice how in the "bsu-api-server" container we
   # define the DATABASE_URL it contains the MYSQL_DATABASE at the end of the string 
