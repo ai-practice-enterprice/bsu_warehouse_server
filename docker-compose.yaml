@@ -8,47 +8,54 @@
 # and you're docker engine is running
 # and you will require the following docker file which should be located relative to this file at
 # ./general_api_pe/Dockerfile
+# if this one isn't present you probably haven't run the following command
+# git submodule update --init --recursive
 
-# further on you will have to have to clone the following git repositories from our organisation
+# this will clone the following git repositories from our organisation
 # - general_api_pe
 # - bsu_website
 # - bsu_warehouse_database
 
-# you will also have to make a "ros_ws" folder which contains a source folde called "src"
+# you will also have to make a "ros_ws" folder which contains a source folder called "src"
 # inside this "/ros_ws/src" folder you can clone from github all the ROS2 packages
 # we have already created from our organisation such as:
-# - jetracer_description [REQUIRED : in developement]
-# - jetank_description [REQUIRED : in developement]
-# - robot_gz_startup [REQUIRED : in developement]
-# - robot_teleop [OPTIONAL : in developement/production]
-# - jetracer_controller [REQUIRED : in production]
-# - ...
+# - robot_gz_startup
+# - jetank
+# - jetracer
+# - shared_ros_pkgs
+# - server_ros_comm
 
 # this means that you will have the following file structure:
-# -/docker-compose.yaml
-# -/general_api_pe/
-#         /- Dockerfile
-#         /- ...
-# ./bsu_website/
-#         /- index.html
-#         /- ...
-# ./bsu_warehouse_database/
-#         /- init.sql
-#         /- ...
+# -/ros_ws
+#         /- src
+#             /- jetank/
+#             /- jetracer/
+#             /- robot_gz_startup/
+# -/bsu_warehouse_server
+#         /- docker-compose.yaml
+#         /- general_api_pe/
+#             /- Dockerfile
+#             /- ...
+#         /- bsu_website/
+#             /- index.html
+#             /- ...
+#         /- bsu_warehouse_database/
+#             /- init.sql
+#             /- ...
 
 # finally run the command "docker-compose up" to start up  all  docker containers
 
 # REQUIREMENTS =============================================================================================================
 
 # notice how the "bsu-ros-server" container is not showing any activity it is still up  but you need to enter it by
-# using "docker exec -it DISPLAY=:0 bsu-server-ros bash" command in your terminal
+# using "docker exec -it -e DISPLAY=:0 bsu-server-ros bash" command in your terminal
 
 services:
   # most containers we're running here down below are already running a program/service/application but the first one
   # here isn't so we use the "sh -c sleep infinity" command to keep the docker container running in the background.
-  # to enter the container instead of running "docker start -it bsu-server-ros" you run "docker exec -it DISPLAY=:0  bsu-server-ros bash"
+  # to enter the container instead of running "docker start -it bsu-server-ros" you run "docker exec -it -e DISPLAY=:0  bsu-server-ros bash"
   # the "exec" executes a command (here "bash") and with the -i and -t flags enabled it will create a interactive terminal session
-  # the DISPLAY is a env variable which enables the container to access the host display
+  # the DISPLAY is a env variable (hence the -e flag) which enables the container to access the host display
   bsu-ros-server:
     image: sterren642/rosbox:desktop-latest
     container_name: bsu-server-ros
@@ -59,7 +66,7 @@ services:
     ports:
       - 8003:8003
     volumes:
-      - ./ros_ws:/home/ubuntu/ros_ws
+      - ../ros_ws:/home/ubuntu/ros_ws
       - /run/desktop/mnt/host/wslg/.X11-unix:/tmp/.X11-unix
       - /dev:/dev
 
