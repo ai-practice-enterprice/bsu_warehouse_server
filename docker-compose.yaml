@@ -132,3 +132,22 @@ services:
       - 80
     ports:
       - 8002:80
+
+  # https://geshan.com.np/blog/2022/01/redis-docker/
+  # https://www.ibm.com/think/topics/redis
+  # https://zomro.com/blog/faq/301-kak-ustanovit-redis-v-docker
+  # https://github.com/bitnami/containers/blob/main/bitnami/redis/README.md#customizable-environment-variables
+  # !!! --requirepass pwdAIteamREDIScontainer only in developement otherwise => .env file
+  bsu-redis:
+    image: docker.io/bitnami/redis:latest
+    container_name: bsu-redis
+    restart: always
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass pwdAIteamREDIScontainer
+    environment:
+      - REDIS_PASSWORD=pwdAIteamREDIScontainer
+      - REDIS_PORT_NUMBER=6379
+      - REDIS_DATABASE=0
+    volumes:
+      - ./bsu_redis:/data
