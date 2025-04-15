@@ -139,12 +139,12 @@ services:
   # https://github.com/bitnami/containers/blob/main/bitnami/redis/README.md#customizable-environment-variables
   # !!! --requirepass pwdAIteamREDIScontainer only in developement otherwise => .env file
   bsu-redis:
-    image: docker.io/bitnami/redis:latest
+    image: redis:latest
     container_name: bsu-redis
-    restart: always
+    restart: unless-stopped
     ports:
       - 6379:6379
-    command: redis-server --requirepass pwdAIteamREDIScontainer
+    command: redis-server --appendonly yes --requirepass pwdAIteamREDIScontainer
     environment:
       - REDIS_PASSWORD=pwdAIteamREDIScontainer
       - REDIS_PORT_NUMBER=6379
