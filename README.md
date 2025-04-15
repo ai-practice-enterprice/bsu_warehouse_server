@@ -1,9 +1,20 @@
 # bsu_warehouse_setup
-root repository to setup all the entities in our warehouse
+root repository to setup all the entities in our warehouse:
 - Apache server (frontend)
 - API server (backend)
+  - FastAPI
+  - Celery
+  - Prisma 
 - ROS2 server (ROS2 <-> API server communication)
 - MySQL server (database)
+- Redis
 
-# clone repository
-git clone --recurse-submodules https://github.com/bsu-warehouse/bsu_warehouse_server.git
+The steps that you need to take in order for it all to work are explained inside the 
+Docker-Compose file
+
+# clone repositories
+Because currently this repository uses git submodules you'll have to run the command
+```
+cd bsu_warehouse_server
+git submodule update --init --recursive
+```
