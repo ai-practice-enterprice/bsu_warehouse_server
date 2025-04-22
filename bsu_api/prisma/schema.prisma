@@ -1,0 +1,115 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-py"
+}
+
+model ZoneTypes {
+  zoneTypeID          Int    @id @default(autoincrement())
+  zoneTypeName        String @default("DropZoneIn")
+  zoneTypeDescription String @default("Drop Zone (In)")
+
+  Zones Zones[]
+}
+
+model Zones {
+  zoneID          Int     @id @default(autoincrement())
+  zoneDescription String
+  zoneName        String
+  zoneAvailable   Boolean @default(true)
+  zoneType        Int
+  zoneX           Int     @default(0)
+  zoneY           Int     @default(0)
+  zoneCapacity    Int     @default(4)
+
+  zoneTypes           ZoneTypes         @relation(fields: [zoneType], references: [zoneTypeID])
+  Paths_pathZoneStart Paths[]           @relation("PathZoneStart")
+  Paths_pathZoneEnd   Paths[]           @relation("PathZoneEnd")
+  OrderMovement       OrderMovement[]
+  PackageMovement     PackageMovement[]
+}
+
+model RobotTypes {
+  robotTypeID   Int    @id @default(autoincrement())
+  robotTypeName String @default("DropZoneIn")
+
+  Robots Robots[]
+}
+
+model Robots {
+  robotID        Int      @id @default(autoincrement())
+  robotStatus    Boolean  @default(true)
+  robotType      Int
+  robotNamespace String
+  robotAvailable Boolean  @default(true)
+  insertDate     DateTime @default(now())
+
+  RobotTypes    RobotTypes      @relation(fields: [robotType], references: [robotTypeID])
+  OrderMovement OrderMovement[]
+}
+
+// for more info on Pose messages in ROS2 => 
+// https://docs.ros2.org/foxy/api/geometry_msgs/msg/Pose.html 
+// https://docs.ros2.org/foxy/api/geometry_msgs/msg/Point.html
+// https://docs.ros2.org/foxy/api/geometry_msgs/msg/Quaternion.html
+// https://automaticaddison.com/how-to-send-a-goal-path-to-the-ros-2-navigation-stack-nav2/
+model Paths {
+  pathID          Int     @id @default(autoincrement())
+  pathNumber      Int
+  pathDescription String  @default("")
+  pathZoneStart   Int
+  pathZoneEnd     Int
+  pathCoordinates String // PoseStamped() =>  pos_x,pos_y, (pos_z,orient_x,orient_y,orient_z,) orient_w |  () => are neglected 
+  pathActive      Boolean @default(false)
+
+  zoneStart Zones @relation("PathZoneStart", fields: [pathZoneStart], references: [zoneID])
+  zoneEnd   Zones @relation("PathZoneEnd", fields: [pathZoneEnd], references: [zoneID])
+
+  @@index([pathZoneStart], name: "pathZoneStart")
+  @@index([pathZoneEnd], name: "pathZoneEnd")
+}
+
+model Packages {
+  packageID    Int      @id @default(autoincrement())
+  streetName   String
+  houseNumber  String
+  cityName     String
+  cityPostcode String
+  insertDate   DateTime @default(now())
+  active       Boolean  @default(true)
+
+  PackageMovement PackageMovement[]
+}
+
+model OrderMovement {
+  OrderID    Int      @id @default(autoincrement())
+  ZoneID     Int
+  RobotID    Int
+  PathID     Int?
+  status     String   @default("pending")
+  insertDate DateTime @default(now())
+
+  zones  Zones  @relation(fields: [ZoneID], references: [zoneID])
+  robots Robots @relation(fields: [RobotID], references: [robotID])
+
+  @@index([ZoneID], name: "ZoneID")
+  @@index([RobotID], name: "RobotID")
+  @@index([PathID], name: "PathID")
+}
+
+model PackageMovement {
+  ZoneID     Int
+  zoneTypeID Int
+  PackageID  Int
+  insertDate DateTime @default(now())
+
+  zones    Zones    @relation(fields: [ZoneID], references: [zoneID])
+  packages Packages @relation(fields: [PackageID], references: [packageID])
+
+  @@id([ZoneID, PackageID])
+  @@index([ZoneID], name: "ZoneID")
+  @@index([PackageID], name: "PackageID")
+}

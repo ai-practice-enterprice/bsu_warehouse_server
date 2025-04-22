@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSU : Zone & Path Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bsu_general_style.css">
+    <link rel="icon" type="image/x-icon" href="./assets/bsu_ai_icon.svg">
+</head>
+<body>
+    <div class="header">
+        <h1>Zones Management</h1>
+        <div class="nav-links">
+            <a href="./index.html">Robots</a>
+            <a href="./zones.html">Zones</a>
+            <a href="./occupancy.html">Occupancy</a>
+            <a href="./packages.html">Packages</a>
+            <a href="./warehouse.html">Warehouse</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(event, 'zoneTab')">Zone Creation</div>
+            <div class="tab" onclick="switchTab(event, 'pathTab')">Path Creation</div>
+            <div class="tab" onclick="switchTab(event, 'zoneListTab')">Zone List</div>
+            <div class="tab" onclick="switchTab(event, 'pathListTab')">Path List</div>
+        </div>
+        
+        <!-- Zone Creation Tab -->
+        <div id="zoneTab" class="tab-content active">
+            <h2>Create New Zone</h2>
+            <form id="createZoneForm">
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="zoneName">Zone Name</label>
+                        <input type="text" id="zoneName" name="zoneName" placeholder="e.g., Warehouse Entry Zone" required>
+                    </div>
+                    
+                    <div class="form-group" style="flex: 1;">
+                        <label for="zoneType">Zone Type</label>
+                        <select id="zoneType" name="zoneType" required>
+                            <option value="DropZoneIn">Drop Zone (In)</option>
+                            <option value="DropZoneOut">Drop Zone (Out)</option>
+                            <option value="Storage">Storage Zone</option>
+                            <option value="ErrorZone">Error Zone</option>
+                            <option value="RobotStation">Robot Station</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="zoneDescription">Zone Description</label>
+                    <textarea id="zoneDescription" name="zoneDescription" placeholder="Detailed description of the zone purpose and location..." required></textarea>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="zoneAvailable" name="zoneAvailable" checked>
+                    <label for="zoneAvailable">Zone Available</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="zoneCheck" name="zoneCheck">
+                    <label for="zoneCheck">Zone Check Required</label>
+                </div>
+                
+                <button type="submit">Create Zone</button>
+            </form>
+        </div>
+        
+        <!-- Path Creation Tab -->
+        <div id="pathTab" class="tab-content">
+            <h2>Create New Path</h2>
+            
+            <div class="path-visualization">
+                <div class="zone-box" id="startZoneDisplay">
+                    Select Start Zone
+                </div>
+                <div class="path-arrow"></div>
+                <div class="zone-box" id="endZoneDisplay">
+                    Select End Zone
+                </div>
+            </div>
+            
+            <form id="createPathForm">
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="pathNumber">Path Number</label>
+                        <input type="number" id="pathNumber" name="pathNumber" min="1" placeholder="e.g., 101" required>
+                    </div>
+                    
+                    <div class="form-group" style="flex: 2;">
+                        <label for="pathDescription">Path Description</label>
+                        <input type="text" id="pathDescription" name="pathDescription" placeholder="e.g., Main corridor to storage area">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="pathZoneStart">Start Zone</label>
+                        <select id="pathZoneStart" name="pathZoneStart" required onchange="updateStartZoneDisplay()">
+                            <option value="">Select Start Zone</option>
+                            <!-- Will be populated from API -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" style="flex: 1;">
+                        <label for="pathZoneEnd">End Zone</label>
+                        <select id="pathZoneEnd" name="pathZoneEnd" required onchange="updateEndZoneDisplay()">
+                            <option value="">Select End Zone</option>
+                            <!-- Will be populated from API -->
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pathCoordinates">Path Coordinates</label>
+                    <div class="coordinate-input">
+                        <p>Add coordinate pairs to define the path route</p>
+                        <div id="coordinatesList">
+                            <div class="coordinate-pair">
+                                <input type="number" placeholder="X" class="coord-x" required>
+                                <input type="number" placeholder="Y" class="coord-y" required>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <button type="button" class="add-coordinate-btn" onclick="addCoordinatePair()">+ Add Coordinate</button>
+                            <button type="button" class="remove-coordinate-btn" onclick="removeCoordinatePair()">- Remove Last</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="pathActive" name="pathActive">
+                    <label for="pathActive">Path Active</label>
+                </div>
+                
+                <button type="submit">Create Path</button>
+            </form>
+        </div>
+        
+        <!-- Zone List Tab -->
+        <div id="zoneListTab" class="tab-content">
+            <h2>Existing Zones</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Check</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="zoneTableBody">
+                    <!-- Will be populated from API -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Path List Tab -->
+        <div id="pathListTab" class="tab-content">
+            <h2>Existing Paths</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Path #</th>
+                        <th>Start Zone</th>
+                        <th>End Zone</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="pathTableBody">
+                    <!-- Will be populated from API -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="./javascript/utils/buildZoneCard.js"></script>
+    <script src="./javascript/page_specific/zones.js"></script>
+</body>
+</html>

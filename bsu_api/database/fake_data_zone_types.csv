@@ -1,0 +1,8 @@
+zoneTypeID;zoneTypeName;zoneTypeDescription
+1;Void;Void
+2;RobotStation;Robot Station
+3;Storage;Storage
+4;DropZoneIn;Drop Zone (In)
+5;ErrorZone;Error Zone
+6;Normal;Normal
+7;DropZoneOut;Drop Zone (Out)
