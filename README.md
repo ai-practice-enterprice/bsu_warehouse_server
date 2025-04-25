@@ -11,10 +11,3 @@ root repository to setup all the entities in our warehouse:
 
 The steps that you need to take in order for it all to work are explained inside the 
 [Docker-Compose file](./docker-compose.yaml)
-
-# clone repositories
-Because currently this repository uses git submodules you'll have to run the command
-```
-cd bsu_warehouse_server
-git submodule update --init --recursive
-```
