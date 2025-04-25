@@ -20,7 +20,7 @@ function switchTab(event, tabId) {
 // Load zones for dropdowns and zone list
 async function loadZones() {
     try {
-        const response = await fetch('http://localhost:8000/frontend/zone/all');
+        const response = await fetch(`${serverURLPrefix}/zone/all`);
         
         if (!response.ok) {
             const errorText = await response.text();
@@ -67,7 +67,7 @@ async function loadZones() {
 // Load paths for path list
 async function loadPaths() {
     try {
-        const response = await fetch('http://localhost:8000/frontend/path/all');
+        const response = await fetch(`${serverURLPrefix}/path/all`);
         
         if (!response.ok) {
             const errorText = await response.text();
@@ -121,7 +121,7 @@ document.getElementById('createZoneForm').addEventListener('submit', async funct
     const zoneCheck = document.getElementById('zoneCheck').checked;
     
     try {
-        const response = await fetch('http://localhost:8000/frontend/zone', {
+        const response = await fetch(`${serverURLPrefix}/zone`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -190,7 +190,7 @@ document.getElementById('createPathForm').addEventListener('submit', async funct
     }
     
     try {
-        const response = await fetch('http://localhost:8000/frontend/path', {
+        const response = await fetch(`${serverURLPrefix}/path`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -241,7 +241,7 @@ document.getElementById('createPathForm').addEventListener('submit', async funct
 // Zone availability toggle
 async function toggleAvailability(id) {
     try {
-        const response = await fetch(`http://localhost:8000/frontend/zone/${id}/toggle`, {
+        const response = await fetch(`${serverURLPrefix}/zone/${id}/toggle`, {
             method: 'PATCH'
         });
         
@@ -292,7 +292,7 @@ async function toggleAvailability(id) {
 // Path status toggle
 async function togglePathStatus(id) {
     try {
-        const response = await fetch(`http://localhost:8000/frontend/path/${id}/toggle`, {
+        const response = await fetch(`${serverURLPrefix}/path/${id}/toggle`, {
             method: 'PATCH'
         });
         

@@ -7,6 +7,16 @@ generator client {
   provider = "prisma-client-py"
 }
 
+model Users {
+  userID           Int      @id @default(autoincrement())
+  userName         String
+  userPassword     String
+  userImagePath    String   @default("")
+  registrationDate DateTime @default(now())
+  adminPrivilege   Boolean  @default(false)
+  active           Boolean  @default(false)
+}
+
 model ZoneTypes {
   zoneTypeID          Int    @id @default(autoincrement())
   zoneTypeName        String @default("DropZoneIn")
@@ -47,7 +57,7 @@ model Robots {
   robotAvailable Boolean  @default(true)
   insertDate     DateTime @default(now())
 
-  RobotTypes    RobotTypes      @relation(fields: [robotType], references: [robotTypeID])
+  robotTypes    RobotTypes      @relation(fields: [robotType], references: [robotTypeID])
   OrderMovement OrderMovement[]
 }
 

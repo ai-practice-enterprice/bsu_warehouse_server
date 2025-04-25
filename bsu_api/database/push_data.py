@@ -1,6 +1,6 @@
 import numpy as np
 from utils.qrcodes import generate_qr_code_b64, decode_qr_code_b64
-from prisma.models import Robots, Paths, Zones , PackageMovement , Packages , ZoneTypes , RobotTypes
+from prisma.models import Robots, Paths, Zones , PackageMovement , Packages , ZoneTypes , RobotTypes , Users , OrderMovement
 from faker import Faker
 from faker.providers import BaseProvider
 
@@ -9,6 +9,7 @@ import random
 import json 
 import csv 
 import os
+import bcrypt
 
 from map_gen.config import (
     MAP ,
@@ -79,6 +80,7 @@ class FakeDataGenerator():
         push_zones: bool = True,
         push_robots: bool = True,
         push_paths: bool = True,
+        push_users: bool = True,
         write_to_file: bool = True,
         file_type: str = "json",
         read_from_file: bool = False,
@@ -99,11 +101,15 @@ class FakeDataGenerator():
             "only_jetank_hiwonder"       : False,
         },
         files: dict = {
-            "packages"      : os.path.join(script_path,"fake_data_packages"),
-            "zones"         : os.path.join(script_path,"fake_data_zones"),
-            "robots"        : os.path.join(script_path,"fake_data_robots"),
-            "zone_types"    : os.path.join(script_path,"fake_data_zone_types"),
-            "robot_types"   : os.path.join(script_path,"fake_data_robot_types"),
+            "packages"          : os.path.join(script_path,"fake_data_packages"),
+            "zones"             : os.path.join(script_path,"fake_data_zones"),
+            "robots"            : os.path.join(script_path,"fake_data_robots"),
+            "zone_types"        : os.path.join(script_path,"fake_data_zone_types"),
+            "robot_types"       : os.path.join(script_path,"fake_data_robot_types"),
+            "paths"             : os.path.join(script_path,"fake_data_paths"),
+            "order_movement"    : os.path.join(script_path,"fake_data_order_movement"),
+            "packge_movement"   : os.path.join(script_path,"fake_data_packge_movement"),
+            "users"             : os.path.join(script_path,"fake_data_users"),
         }
     ):
         
@@ -113,6 +119,13 @@ class FakeDataGenerator():
         self.push_paths = push_paths
         self.push_OM = False
         self.push_PM = False
+        self.push_users = push_users
+
+        if self.push_packages and self.push_zones:
+            if self.push_robots and self.push_paths:
+                self.push_OM = True
+            self.push_PM = True
+
         self.field_headers = {
             "packages" : [
                 "packageID",
@@ -148,12 +161,32 @@ class FakeDataGenerator():
                 "zoneTypeName",
                 "zoneTypeDescription",
             ],
+            "users" : [
+                "userName",
+                "userPassword",
+                "userImagePath",
+                "adminPrivilege",
+                "active",
+            ],
+            "paths" : [
+                "pathNumber",
+                "pathDescription",
+                "pathZoneStart",
+                "pathZoneEnd",
+                "pathCoordinates",
+            ],
+            "order_movement" : [
+                "ZoneID",
+                "RobotID",
+                "PathID",
+                "status",
+            ],
+            "packge_movement" : [
+                "ZoneID",
+                "zoneTypeID",
+                "PackageID",
+            ],
         }
-
-        if self.push_packages and self.push_zones:
-            if self.push_robots and self.push_paths:
-                self.push_OM = True
-            self.push_PM = True
 
         self.write_data_to_file = write_to_file
         self.read_from_file = read_from_file
@@ -224,6 +257,8 @@ class FakeDataGenerator():
                 await self.push_fake_PM_to_db()
             if self.push_OM:
                 await self.push_fake_OM_to_db()
+            if self.push_users:
+                await self.push_fake_users()
     # https://www.geeksforgeeks.org/how-to-fix-datetime-datetime-not-json-serializable-in-python/
     def serialize_datetime(self,obj): 
         if isinstance(obj, datetime): 
@@ -271,6 +306,27 @@ class FakeDataGenerator():
             writer.writerows(data) 
             f.close()
 
+    def write_to_file(self,data,table_db):
+        if self.write_data_to_file:
+            if self.fileType == "json":
+                self.write_json(self.files[table_db],data)
+            elif self.fileType == "csv":
+                self.write_csv(self.files[table_db],data,self.field_headers[table_db])
+
+    async def add_data(self,data,table_db):
+        try:
+            if table_db == "packages":        await Packages.prisma().create_many(data=data)
+            if table_db == "zones":           await Zones.prisma().create_many(data=data)
+            if table_db == "robots":          await Robots.prisma().create_many(data=data)
+            if table_db == "zone_types":      await ZoneTypes.prisma().create_many(data=data)
+            if table_db == "robot_types":     await RobotTypes.prisma().create_many(data=data)
+            if table_db == "users":           await Users.prisma().create_many(data=data)
+            if table_db == "order_movement":  await OrderMovement.prisma().create_many(data=data)
+            if table_db == "package_movement":await PackageMovement.prisma().create_many(data=data)
+            if table_db == "paths":           await Users.prisma().create_many(data=data)
+        except Exception as e:
+            log.info(f"Could not insert fake data for {table_db} into DB => {e}")
+
     # FAKE DATA GENERATOR FUNCTIONS =================================================
     async def push_data_from_file(self):
         for table_db , file_path in self.files.items():
@@ -286,11 +342,9 @@ class FakeDataGenerator():
                             data.append(deserialized_row)
                     else:
                         raise Exception("no valid filetype")
-                    if table_db == "packages":      await Packages.prisma().create_many(data=data)
-                    if table_db == "zones":         await Zones.prisma().create_many(data=data)
-                    if table_db == "robots":        await Robots.prisma().create_many(data=data)
-                    if table_db == "zone_types":    await ZoneTypes.prisma().create_many(data=data)
-                    if table_db == "robot_types":   await RobotTypes.prisma().create_many(data=data)
+                    
+                    await self.add_data(data=data,table_db=table_db)
+
             except Exception as e:
                 log.info(f"could not read data from file {file_path}: {e.args}")    
 
@@ -350,18 +404,9 @@ class FakeDataGenerator():
 
         except Exception as e:
             log.info(f"Could not create fake packages record for day {insert_date.strftime('%c')} number of records {nbr_of_packages} {e}")
-            
-        try:
-            await Packages.prisma().create_many(data=package_data)
-        except Exception as e:
-            log.info(f"Could not insert fake packages into DB {e}")
 
-
-        if self.write_data_to_file:
-            if self.fileType == "json":
-                self.write_json(self.files["packages"],package_data)
-            elif self.fileType == "csv":
-                self.write_csv(self.files["packages"],package_data,self.field_headers["packages"])
+        await self.add_data(package_data,"packages")
+        self.write_to_file(package_data,"packages")
 
             
 
@@ -376,16 +421,9 @@ class FakeDataGenerator():
                 "zoneTypeName" : zone_type_name,
                 "zoneTypeDescription" : zone_tye_desc,
             })
-        try:
-            await ZoneTypes.prisma().create_many(data=zone_data_types)
-        except Exception as e:
-            log.info(f"Could not insert fake zone types into DB {e}")
 
-        if self.write_data_to_file:
-            if self.fileType == "json":
-                self.write_json(self.files["zone_types"],zone_data_types)
-            elif self.fileType == "csv":
-                self.write_csv(self.files["zone_types"],zone_data_types,self.field_headers["zone_types"])
+        await self.add_data(zone_data_types,"zone_types")
+        self.write_to_file(zone_data_types,"zone_types")
 
         zone_data: list = []
         if len(self.map) > 1:
@@ -419,18 +457,9 @@ class FakeDataGenerator():
                 })
                 zoneID += 1
 
-
-        try:
-            await Zones.prisma().create_many(data=zone_data)
-        except Exception as e:
-            log.info(f"Could not insert fake zones into DB {e}")
-
-        if self.write_data_to_file:
-            if self.fileType == "json":
-                self.write_json(self.files["zones"],zone_data)
-            elif self.fileType == "csv":
-                self.write_csv(self.files["zones"],zone_data,self.field_headers["zones"])
-
+        await self.add_data(zone_data,"zones")
+        self.write_to_file(zone_data,"zones")
+       
     async def push_fake_robots_to_db(self):
         log.info(f"====== Pushing fake robots ======")
 
@@ -443,17 +472,8 @@ class FakeDataGenerator():
                 "robotTypeID"   : robot_type,
                 "robotTypeName" : robot_type_name,
             })
-        try:
-            await RobotTypes.prisma().create_many(data=robot_data_types)
-        except Exception as e:
-            log.info(f"Could not insert fake robot types into DB {e}")
-
-        if self.write_data_to_file:
-            if self.fileType == "json":
-                self.write_json(self.files["robot_types"],robot_data_types)
-            elif self.fileType == "csv":
-                self.write_csv(self.files["robot_types"],robot_data_types,self.field_headers["robot_types"])
-
+        await self.add_data(robot_data_types,"robot_types")
+        self.write_to_file(robot_data_types,"robot_types")
 
         robot_data: list = []
         fake = Faker()
@@ -489,16 +509,10 @@ class FakeDataGenerator():
                 "robotNamespace" : robot_ns,
             }) 
             robotID += 1
-        try:
-            await Robots.prisma().create_many(data=robot_data)
-        except Exception as e:
-            log.info(f"Could not insert fake robots into DB {e}")
 
-        if self.write_data_to_file:
-            if self.fileType == "json":
-                self.write_json(self.files["robots"],robot_data)
-            elif self.fileType == "csv":
-                self.write_csv(self.files["robots"],robot_data,self.field_headers["robots"])
+        await self.add_data(robot_data,"robots")
+        self.write_to_file(robot_data,"robots")
+
 
     async def push_fake_paths_to_db(self,):
         log.info(f"====== Pushing fake paths ======")
@@ -514,4 +528,33 @@ class FakeDataGenerator():
         log.info(f"====== Pushing fake OMs ======")
         pass
 
+    async def push_fake_users(self):
+        log.info(f"====== Pushing fake Users ======")
+        
+        users = {
+            "ennis.celik@blueskyunlimited.org" : ["r0996240!AI",True],
+            "john.doe@blueskyunlimited.org" : ["r0887351!AI",False],
+        }
+        user_data = []
+
+        for userName , settings in users.items():
+            pwd = settings[0]
+            adminPrivilge = settings[1]
+
+            password = str(pwd).encode()
+            salt = bcrypt.gensalt()
+            hashed_password = bcrypt.hashpw(password, salt)
+
+            user_data.append({
+                "userName"         : userName,
+                "userPassword"     : hashed_password.decode(),
+                "userImagePath"    : "",
+                "adminPrivilege"   : adminPrivilge,
+                "active"           : True,
+            })
+
+
+        await self.add_data(user_data,"users")
+        self.write_to_file(user_data,"users")
+        
     # FAKE DATA GENERATOR FUNCTIONS =================================================

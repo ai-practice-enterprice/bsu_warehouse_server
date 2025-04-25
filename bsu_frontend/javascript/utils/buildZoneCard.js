@@ -11,6 +11,7 @@ async function buildZoneCard(zone,mode = "rect",reloadMode = "card" | "warehouse
         case "Normal":       badgeClass = 'badge-normal';       break;
         case "DropZoneOut":  badgeClass = 'badge-dropzoneout';  break;
         default:
+            badgeClass = 'badge-default';
             break;
     }
     // decide what type of zone card to make
@@ -117,7 +118,7 @@ async function rectangleCard(zone,badgeClass,reloadMode) {
 
 async function changeZoneCapacity(zoneID,reloadMode) {
     let newZoneCapacity = document.getElementById("zoneCapacity").value;
-    const response = await fetch(`http://localhost:8000/frontend/zone/change/capacity?zone_id=${zoneID}&new_zone_capacity=${newZoneCapacity}`, {
+    const response = await fetch(`${serverURLPrefix}/zone/change/capacity?zone_id=${zoneID}&new_zone_capacity=${newZoneCapacity}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -140,7 +141,7 @@ async function changeZoneCapacity(zoneID,reloadMode) {
 
 async function changeZoneType(zoneID,reloadMode) {
     let newZoneType = document.getElementById("zoneType").value;
-    const response = await fetch(`http://localhost:8000/frontend/zone/change/type?zone_id=${zoneID}&new_zone_type=${newZoneType}`, {
+    const response = await fetch(`${serverURLPrefix}/zone/change/type?zone_id=${zoneID}&new_zone_type=${newZoneType}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'

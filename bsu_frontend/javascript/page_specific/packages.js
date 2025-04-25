@@ -6,7 +6,7 @@ const lineChartOptionsContainer = document.getElementById("line-chart-options");
 lineChartOptionsContainer.style.display = "None";
 const tabNav = document.getElementById("tabs-nav");
 const tabChartNav = document.getElementById("tabs-chart-nav");
-const response = fetch("http://localhost:8000/frontend/package/all?group_by=day", {
+const response = fetch(`${serverURLPrefix}/package/all?group_by=day`, {
     method: "GET",
     headers: {
         "Content-Type": "application/json"

@@ -58,9 +58,10 @@ async def lifespan(_) -> AsyncIterator[None]:
         push_zones = True,
         push_robots = True,
         push_paths = True,
+        push_users = True, 
         write_to_file = True,
-        read_from_file = True,
-        file_type = "json",
+        read_from_file = False,
+        file_type = "csv",
         additional_configuration = {
             "package_starting_records"  : 80,
             "package_start_date"         : datetime(year=2024,month=1,day=1),

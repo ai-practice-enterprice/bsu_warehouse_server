@@ -34,7 +34,7 @@ async def create_robot(robot: RobotCreationRequest):
             "robotType": robot_type_id,
             "robotStatus": robot.robot_status
         },
-        include={"RobotTypes":True}
+        include={"robotTypes":True}
     )
 
     return new_robot
@@ -45,7 +45,7 @@ async def read_robots():
     """
     Fetch all robots
     """
-    robots = await Robots.prisma().find_many(include={"RobotTypes":True})
+    robots = await Robots.prisma().find_many(include={"robotTypes":True})
     return robots
 
 @router.get("/robot/type/all")
@@ -70,7 +70,7 @@ async def update_robot(robot_id: int):
     updated_robot = await Robots.prisma().update(
         where={"robotID": robot_id}, 
         data={"robotStatus": new_status},
-        include={"RobotTypes":True}
+        include={"robotTypes":True}
     )
 
     return updated_robot

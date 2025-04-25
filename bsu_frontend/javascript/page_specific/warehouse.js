@@ -1,5 +1,5 @@
 async function loadWarehouseMap() {
-    const response = await fetch("http://localhost:8000/frontend/zone/map_warehouse", {
+    const response = await fetch(`${serverURLPrefix}/zone/map_warehouse`, {
         method: "POST",
     });
 
@@ -40,7 +40,7 @@ async function addchartData(){
     chartContainer.innerHTML = "";
 
     try {
-        const response = await fetch('http://localhost:8000/frontend/zone/type/count');
+        const response = await fetch(`${serverURLPrefix}/zone/type/count`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -92,7 +92,7 @@ async function addchartData(){
 
 async function fetchZoneData(zoneId) {
     try {
-        const response = await fetch(`http://localhost:8000/frontend/zone/data/${zoneId}`, {
+        const response = await fetch(`${serverURLPrefix}/zone/data/${zoneId}`, {
             method: "PATCH",
         });
 

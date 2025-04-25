@@ -3,7 +3,7 @@ async function loadZones(zoneType = "DropZoneIn") {
         console.log('Fetching zone data...');
          
         // Get all zones
-        const response = await fetch(`http://localhost:8000/frontend/zone/type?zone_type=${zoneType}`);
+        const response = await fetch(`${serverURLPrefix}/zone/type?zone_type=${zoneType}`);
 
         if (!response.ok) {
             throw new Error(`Failed to fetch zones: ${response.status}`);

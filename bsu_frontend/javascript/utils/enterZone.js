@@ -3,7 +3,7 @@ async function enterZone(zoneId,reloadMode = "card" | "warehouse map") {
     try {
         console.log(`Entering zone ${zoneId}`);
         
-        const response = await fetch(`http://localhost:8000/frontend/zone/${zoneId}/enter`, {
+        const response = await fetch(`${serverURLPrefix}/zone/${zoneId}/enter`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'

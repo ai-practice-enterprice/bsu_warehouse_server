@@ -3,7 +3,7 @@ async function exitZone(zoneId,reloadMode = "card" | "warehouse map") {
     try {
         console.log(`Exiting zone ${zoneId}`);
         
-        const response = await fetch(`http://localhost:8000/frontend/zone/${zoneId}/exit`, {
+        const response = await fetch(`${serverURLPrefix}/zone/${zoneId}/exit`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
