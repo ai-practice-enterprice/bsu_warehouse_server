@@ -1,0 +1,722 @@
+[
+    {
+        "zoneID": 1,
+        "zoneDescription": "zone in which robots can deposit outgoing packages and courrier can take to load in their truck/van's",
+        "zoneName": "DropZoneOut 1",
+        "zoneAvailable": true,
+        "zoneType": 7,
+        "zoneX": 0,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 2,
+        "zoneDescription": "",
+        "zoneName": "Normal 2",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 1,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 3,
+        "zoneDescription": "",
+        "zoneName": "Void 3",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 2,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 4,
+        "zoneDescription": "",
+        "zoneName": "Void 4",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 3,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 5,
+        "zoneDescription": "zone in which robots can deposit packages that are unreadable or not present in the DB",
+        "zoneName": "ErrorZone 5",
+        "zoneAvailable": true,
+        "zoneType": 5,
+        "zoneX": 4,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 6,
+        "zoneDescription": "zone in which robots can deposit packages that are unreadable or not present in the DB",
+        "zoneName": "ErrorZone 6",
+        "zoneAvailable": true,
+        "zoneType": 5,
+        "zoneX": 5,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 7,
+        "zoneDescription": "zone in which robots can deposit packages that are unreadable or not present in the DB",
+        "zoneName": "ErrorZone 7",
+        "zoneAvailable": true,
+        "zoneType": 5,
+        "zoneX": 6,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 8,
+        "zoneDescription": "zone in which robots can deposit packages that are unreadable or not present in the DB",
+        "zoneName": "ErrorZone 8",
+        "zoneAvailable": true,
+        "zoneType": 5,
+        "zoneX": 7,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 9,
+        "zoneDescription": "for charging the robots",
+        "zoneName": "RobotStation 9",
+        "zoneAvailable": true,
+        "zoneType": 2,
+        "zoneX": 8,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 10,
+        "zoneDescription": "for charging the robots",
+        "zoneName": "RobotStation 10",
+        "zoneAvailable": true,
+        "zoneType": 2,
+        "zoneX": 9,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 11,
+        "zoneDescription": "for charging the robots",
+        "zoneName": "RobotStation 11",
+        "zoneAvailable": true,
+        "zoneType": 2,
+        "zoneX": 10,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 12,
+        "zoneDescription": "",
+        "zoneName": "Void 12",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 11,
+        "zoneY": 0,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 13,
+        "zoneDescription": "",
+        "zoneName": "Void 13",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 0,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 14,
+        "zoneDescription": "",
+        "zoneName": "Normal 14",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 1,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 15,
+        "zoneDescription": "",
+        "zoneName": "Normal 15",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 2,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 16,
+        "zoneDescription": "",
+        "zoneName": "Normal 16",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 3,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 17,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 17",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 4,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 18,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 18",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 5,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 19,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 19",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 6,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 20,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 20",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 7,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 21,
+        "zoneDescription": "",
+        "zoneName": "Void 21",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 8,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 22,
+        "zoneDescription": "",
+        "zoneName": "Normal 22",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 9,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 23,
+        "zoneDescription": "",
+        "zoneName": "Normal 23",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 10,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 24,
+        "zoneDescription": "zone in which courriers can deposit their packages and robots can pick up",
+        "zoneName": "DropZoneIn 24",
+        "zoneAvailable": true,
+        "zoneType": 4,
+        "zoneX": 11,
+        "zoneY": 1,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 25,
+        "zoneDescription": "zone in which robots can deposit outgoing packages and courrier can take to load in their truck/van's",
+        "zoneName": "DropZoneOut 25",
+        "zoneAvailable": true,
+        "zoneType": 7,
+        "zoneX": 0,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 26,
+        "zoneDescription": "",
+        "zoneName": "Normal 26",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 1,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 27,
+        "zoneDescription": "",
+        "zoneName": "Void 27",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 2,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 28,
+        "zoneDescription": "",
+        "zoneName": "Void 28",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 3,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 29,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 29",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 4,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 30,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 30",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 5,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 31,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 31",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 6,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 32,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 32",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 7,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 33,
+        "zoneDescription": "",
+        "zoneName": "Normal 33",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 8,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 34,
+        "zoneDescription": "",
+        "zoneName": "Normal 34",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 9,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 35,
+        "zoneDescription": "",
+        "zoneName": "Normal 35",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 10,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 36,
+        "zoneDescription": "",
+        "zoneName": "Void 36",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 11,
+        "zoneY": 2,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 37,
+        "zoneDescription": "",
+        "zoneName": "Void 37",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 0,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 38,
+        "zoneDescription": "",
+        "zoneName": "Normal 38",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 1,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 39,
+        "zoneDescription": "",
+        "zoneName": "Normal 39",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 2,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 40,
+        "zoneDescription": "",
+        "zoneName": "Normal 40",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 3,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 41,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 41",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 4,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 42,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 42",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 5,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 43,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 43",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 6,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 44,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 44",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 7,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 45,
+        "zoneDescription": "",
+        "zoneName": "Void 45",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 8,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 46,
+        "zoneDescription": "",
+        "zoneName": "Void 46",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 9,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 47,
+        "zoneDescription": "",
+        "zoneName": "Normal 47",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 10,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 48,
+        "zoneDescription": "zone in which courriers can deposit their packages and robots can pick up",
+        "zoneName": "DropZoneIn 48",
+        "zoneAvailable": true,
+        "zoneType": 4,
+        "zoneX": 11,
+        "zoneY": 3,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 49,
+        "zoneDescription": "zone in which robots can deposit outgoing packages and courrier can take to load in their truck/van's",
+        "zoneName": "DropZoneOut 49",
+        "zoneAvailable": true,
+        "zoneType": 7,
+        "zoneX": 0,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 50,
+        "zoneDescription": "",
+        "zoneName": "Normal 50",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 1,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 51,
+        "zoneDescription": "",
+        "zoneName": "Normal 51",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 2,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 52,
+        "zoneDescription": "",
+        "zoneName": "Void 52",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 3,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 53,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 53",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 4,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 54,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 54",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 5,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 55,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 55",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 6,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 56,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 56",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 7,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 57,
+        "zoneDescription": "",
+        "zoneName": "Normal 57",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 8,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 58,
+        "zoneDescription": "",
+        "zoneName": "Normal 58",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 9,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 59,
+        "zoneDescription": "",
+        "zoneName": "Normal 59",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 10,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 60,
+        "zoneDescription": "",
+        "zoneName": "Void 60",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 11,
+        "zoneY": 4,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 61,
+        "zoneDescription": "",
+        "zoneName": "Void 61",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 0,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 62,
+        "zoneDescription": "for charging the robots",
+        "zoneName": "RobotStation 62",
+        "zoneAvailable": true,
+        "zoneType": 2,
+        "zoneX": 1,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 63,
+        "zoneDescription": "for charging the robots",
+        "zoneName": "RobotStation 63",
+        "zoneAvailable": true,
+        "zoneType": 2,
+        "zoneX": 2,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 64,
+        "zoneDescription": "for charging the robots",
+        "zoneName": "RobotStation 64",
+        "zoneAvailable": true,
+        "zoneType": 2,
+        "zoneX": 3,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 65,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 65",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 4,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 66,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 66",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 5,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 67,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 67",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 6,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 68,
+        "zoneDescription": "for putting packages (up to 4)",
+        "zoneName": "Storage 68",
+        "zoneAvailable": true,
+        "zoneType": 3,
+        "zoneX": 7,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 69,
+        "zoneDescription": "",
+        "zoneName": "Void 69",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 8,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 70,
+        "zoneDescription": "",
+        "zoneName": "Void 70",
+        "zoneAvailable": true,
+        "zoneType": 1,
+        "zoneX": 9,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 71,
+        "zoneDescription": "",
+        "zoneName": "Normal 71",
+        "zoneAvailable": true,
+        "zoneType": 6,
+        "zoneX": 10,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    },
+    {
+        "zoneID": 72,
+        "zoneDescription": "zone in which courriers can deposit their packages and robots can pick up",
+        "zoneName": "DropZoneIn 72",
+        "zoneAvailable": true,
+        "zoneType": 4,
+        "zoneX": 11,
+        "zoneY": 5,
+        "zoneCapacity": 4
+    }
+]

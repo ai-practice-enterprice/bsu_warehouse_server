@@ -1,0 +1,1 @@
+var serverURLPrefix = "http://localhost:8000/frontend"

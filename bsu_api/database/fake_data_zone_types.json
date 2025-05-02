@@ -1,0 +1,37 @@
+[
+    {
+        "zoneTypeID": 1,
+        "zoneTypeName": "Void",
+        "zoneTypeDescription": "Void"
+    },
+    {
+        "zoneTypeID": 2,
+        "zoneTypeName": "RobotStation",
+        "zoneTypeDescription": "Robot Station"
+    },
+    {
+        "zoneTypeID": 3,
+        "zoneTypeName": "Storage",
+        "zoneTypeDescription": "Storage"
+    },
+    {
+        "zoneTypeID": 4,
+        "zoneTypeName": "DropZoneIn",
+        "zoneTypeDescription": "Drop Zone (In)"
+    },
+    {
+        "zoneTypeID": 5,
+        "zoneTypeName": "ErrorZone",
+        "zoneTypeDescription": "Error Zone"
+    },
+    {
+        "zoneTypeID": 6,
+        "zoneTypeName": "Normal",
+        "zoneTypeDescription": "Normal"
+    },
+    {
+        "zoneTypeID": 7,
+        "zoneTypeName": "DropZoneOut",
+        "zoneTypeDescription": "Drop Zone (Out)"
+    }
+]
