@@ -1,38 +1,37 @@
 # this are a few implementations of ARQ but mostly besed upon
 # => https://safir.lsst.io/user-guide/arq.html
 # => https://arq-docs.helpmanual.io/#simple-usage
-from arq import cron , create_pool , ArqRedis
-from arq.connections import RedisSettings
+import logging
+import httpx
+import zenoh
+import asyncio
+from arq import cron, create_pool, ArqRedis
+from prisma import Prisma 
+from typing import Any
+
 from .worker_functions import check_for_package_to_move, process_order
 from config import ARQ_REDIS_SETTINGS
-
-from prisma import Prisma 
-
-from fastapi import HTTPException
-
-from typing import Any
-from httpx import AsyncClient
-
-from logging import Logger 
 from utils.logger import setup_logger
-
 
 # ======================== ARQ coroutines to run at certain events ======================== #
 # ctx == context is dictionary that will be passed around that the worker requires
 # it is the 1st variable in any function executed by a ARQ worker 
-async def startup(ctx: dict[Any, Any]):
+async def startup(ctx: dict[str, Any]):
     """Runs during worker start-up to set up the worker context."""
     ctx["logger"] = setup_logger(__name__)
 
     ctx["logger"].info("------------ Worker start up running ------------")
     # The instance key uniquely identifies this worker in logs
-    async_http_client = AsyncClient()
+    async_http_client = httpx.AsyncClient()
     ctx["http_client"] = async_http_client
-    # because the ARQ worker runs in a separate process and doesn’t share the same 
+    # because the ARQ worker runs in a separate process and doesn't share the same 
     # Prisma instance or async context as our FastAPI app, we need to create a new Prisma instance
     prisma_query_engine = Prisma(auto_register=True)
     await prisma_query_engine.connect()
     ctx["prisma"] = prisma_query_engine
+
+    ctx["zenoh"] = zenoh.open(zenoh.Config())
+    ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("")
 
     # arq == asyn Redis queue 
     # => arq is the same as python's rq library but it uses asynchio on top of it
@@ -42,10 +41,11 @@ async def startup(ctx: dict[Any, Any]):
 
 async def shutdown(ctx: dict[Any, Any]):
     """Runs during worker shutdown to cleanup resources."""
-    log: Logger = ctx["logger"]
-    async_http_client: AsyncClient = ctx["http_client"]
+    log: logging.Logger = ctx["logger"]
+    async_http_client: httpx.AsyncClient = ctx["http_client"]
     prisma_query_engine: Prisma = ctx["prisma"]
     arq_redis: ArqRedis = ctx["arq_redis"]
+    zenoh_client: zenoh.Session = ctx["zenoh"]
 
     log.info("------------ Worker shutdown running ------------")
     try:
@@ -63,10 +63,12 @@ async def shutdown(ctx: dict[Any, Any]):
     except Exception as e:
         log.warning("Issue closing the ArqRedis instance : %s", str(e))
 
+    try:
+        zenoh_client.close()
+    except Exception as e:
+        log.warning("Issue closing the zenoh client : %s", str(e))
+
     log.info("------------ Worker shutdown complete ------------")
-
-
-
 
 
 # ======================== ARQ worker settings ======================== #
@@ -81,10 +83,14 @@ class WorkerSettings:
 
     redis_settings = ARQ_REDIS_SETTINGS
 
-    ctx = dict()
-    ctx["job_try"] = 5
+    # Set retry settings for jobs
     max_tries = 3
     retry_jobs = True
+    
+    # override context for jobs
+    ctx = dict()
+    ctx["job_try"] = 1  # Starting job try count
+    ctx["max_tries"] = max_tries  # Explicitly set the max tries for the job
 
     # https://arq-docs.helpmanual.io/#cron-jobs
     cron_jobs = [
