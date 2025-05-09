@@ -1,5 +1,6 @@
 import random
 import zenoh
+import time
 from typing import Any
 import httpx
 import asyncio
@@ -13,7 +14,6 @@ from arq.worker import Retry
 # create the taskqueue functions ===========================================================
 async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coords: tuple[int, int]):
     log: Logger = ctx["logger"]
-    http_client: httpx.AsyncClient = ctx["http_client"]
     zenoh_pub: zenoh.Publisher = ctx["zenoh_pub"]
     log.info(f"Attempting to clear package {package_id} from zone {zone_id}...")
 
@@ -122,7 +122,7 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
         
         # 3) Send Zenoh pub to tell robot to move
         try:
-            await asyncio.to_thread(zenoh_pub.put, "")
+            await asyncio.to_thread(zenoh_pub.put, str(coords))
         except Exception as e:
             log.error(f"Error sending request to RosApiBridge: {str(e)}")
             # Revert robot availability
@@ -192,3 +192,21 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
         log.exception(f"ARQ : Error checking for new orders: {e}")
 
 # create the taskqueue functions ===========================================================
+
+
+def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
+    """
+    This function handles the notification from the robot
+    """
+    def callback(sample: zenoh.Sample):
+        # here we should handle the namespace so we know which robot sent the notification
+        log.info(f"Received notification from robot: {sample}")
+
+    subscriber = zenoh_client.declare_subscriber("**/to_server", callback)
+    log.info("Zenoh subscriber declared for robot notifications")
+
+    while True:
+        try:
+            time.sleep(1)
+        except:
+            break
