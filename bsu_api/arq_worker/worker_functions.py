@@ -4,7 +4,7 @@ from typing import Any
 import httpx
 import asyncio
 from logging import Logger
-from prisma.models import Robots, Zones , PackageMovement
+from prisma.models import Robots, Zones , PackageMovement, OrderMovement
 from arq import ArqRedis
 from arq.worker import Retry
 
@@ -17,8 +17,7 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
     zenoh_pub: zenoh.Publisher = ctx["zenoh_pub"]
     log.info(f"Attempting to clear package {package_id} from zone {zone_id}...")
 
-    # 1) Find an available robot
-    # 1.1) Exception handling if no robot available => retry +1
+    # 1) Find an available robot or retry if no robot available
     try:
         robots = await Robots.prisma().find_many(
             where={"AND": [
@@ -101,14 +100,40 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
             raise Retry(defer=5)
         log.info(f"Robot {r1.robotNamespace} marked as unavailable")
         
-        # 3) Send Zenoh pub
+        # 2.1) Create an OrderMovement entry to track this task
         try:
-            await asyncio.to_thread(zenoh_pub.put, "") 
+            # Create order movement to associate the robot with this task
+            order = await OrderMovement.prisma().create(
+                data={
+                    "RobotID": r1.robotID,
+                    "ZoneID": zone_id,
+                    "status": "processing"
+                }
+            )
+            log.info(f"Created order {order.OrderID} for package {package_id} with robot {r1.robotNamespace}")
         except Exception as e:
-            log.error(f"Error sending request to RosApiBridge: {str(e)}")
+            log.error(f"Failed to create order movement: {str(e)}")
+            # Revert robot availability since we failed to create the order
             await Robots.prisma().update(
                 where={"robotID": r1.robotID},
                 data={"robotAvailable": True}
+            )
+            raise Retry(defer=5)
+        
+        # 3) Send Zenoh pub to tell robot to move
+        try:
+            await asyncio.to_thread(zenoh_pub.put, "")
+        except Exception as e:
+            log.error(f"Error sending request to RosApiBridge: {str(e)}")
+            # Revert robot availability
+            await Robots.prisma().update(
+                where={"robotID": r1.robotID},
+                data={"robotAvailable": True}
+            )
+            # Update order status to failed
+            await OrderMovement.prisma().update(
+                where={"OrderID": order.OrderID},
+                data={"status": "failed"}
             )
             return "error sending request to robot"
         
@@ -127,31 +152,42 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
 
     try:
         log.info("ARQ : Checking for packages to move")
-        new_orders = await PackageMovement.prisma().find_many(where={
-            "zones": {
-                "is": { "zoneTypes": {
-                    "is": { "zoneTypeName": "DropZoneIn"}
-                }}
-            }
-        },
-        include={
-            "packages": True,
-            "zones": {
-                "include": {
-                    "zoneTypes": True
+        # Find packages in DropZoneIn zones that don't already have an active order
+        new_orders = await PackageMovement.prisma().find_many(
+            where={
+                "zones": {
+                    "is": {"zoneTypes": {
+                        "is": {"zoneTypeName": "DropZoneIn"}
+                    }}
+                }
+            },
+            include={
+                "packages": True,
+                "zones": {
+                    "include": {
+                        "zoneTypes": True
+                    }
                 }
             }
-        })
+        )
         
         log.info(f"ARQ : Found {len(new_orders)} new orders.")
         for pm in new_orders:
-            await arq_redis.enqueue_job(
-                "process_order",
-                zone_id=pm.ZoneID,
-                package_id=pm.PackageID,
-                coords=(pm.zones.zoneX, pm.zones.zoneY)
+            # Check if there's already an active order for this package
+            existing_orders = await OrderMovement.prisma().count(
+                where={
+                    "ZoneID": pm.ZoneID,
+                    "status": {"in": ["pending", "processing"]}
+                }
             )
-
+            
+            if existing_orders == 0:
+                await arq_redis.enqueue_job(
+                    "process_order",
+                    zone_id=pm.ZoneID,
+                    package_id=pm.PackageID,
+                    coords=(pm.zones.zoneX, pm.zones.zoneY)
+                )
     except Exception as e:
         log.exception(f"ARQ : Error checking for new orders: {e}")
 
