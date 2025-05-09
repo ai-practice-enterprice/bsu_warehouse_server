@@ -1,11 +1,30 @@
 import aiosmtplib
 import logging
 import functools
+import inspect
+import asyncio
+import warnings
 from email.message import EmailMessage
 
 log = logging.getLogger(__name__)
 
 
+def deprecated(func):
+    """Decorator to mark functions as deprecated."""
+    if inspect.iscoroutinefunction(func):
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            warnings.warn(f"Call to deprecated function {func.__name__}.", category=UserWarning, stacklevel=2)
+            return await func(*args, **kwargs)
+    else:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            warnings.warn(f"Call to deprecated function {func.__name__}.", category=UserWarning, stacklevel=2)
+            return func(*args, **kwargs)
+    return wrapper
+
+
+@deprecated
 async def send_notification(to_: str, content: str) -> None:
     """
     Send a notification email to the specified recipient.
