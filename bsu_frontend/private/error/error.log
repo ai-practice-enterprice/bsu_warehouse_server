@@ -274,3 +274,5 @@
 [ 2 ]: require_once(../forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
 [ 2 ]: require_once(../forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/occupancy.php on line 9
 [ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 250
+[ 2 ]: require_once(../public/error.php): Failed to open stream: No such file or directory in file /var/www/html/classes/Controller.php on line 143
+[ 2 ]: require_once(../public/error.php): Failed to open stream: No such file or directory in file /var/www/html/classes/Controller.php on line 143

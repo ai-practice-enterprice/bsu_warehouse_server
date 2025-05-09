@@ -11,7 +11,7 @@
     <title>Package data</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/bsu_general_style.css">
-    <link rel="icon" type="image/x-icon" href="../assets/bsu_ai_icon.svg">
+    <link rel="icon" type="image/x-icon" href="../assets/svg/bsu_ai_icon.svg">
 </head>
 <body>
     <?php  Navigation::write_navigation("Packages Management"); ?>
@@ -31,12 +31,6 @@
         <div class="card" id="calendar-options">
             <label for="domainSlider">6</label>
             <input type="range" id="domainSlider" min="0" max="100" value="6" step="1">
-        </div>
-        <div class="card" id="line-chart-options">
-            <label for="radio-area-on">area on</label>
-            <input type="radio" id="radio-area-on" value="area-on" name="area-line-chart">
-            <label for="radio-area-off">area off</label>
-            <input type="radio" id="radio-area-off" value="area-off" name="area-line-chart">
         </div>
         <div class="card" id="data-holder">
             <!-- Will be populated with the API -->

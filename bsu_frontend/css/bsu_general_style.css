@@ -11,6 +11,10 @@
 */
 :root {
     /* General */ /* ================================================= */
+    --bsu-bg:         
+        conic-gradient(hsla(0 0% 100% / .75) 0 0), 
+        url("../assets/svg/pattern_2.svg");
+
     --card-shadow: 0 4px 15px hsla(0, 0%, 0%, 0.1);
     --transition-speed: 0.3s;
 
@@ -103,8 +107,18 @@
     --badge-jetank-hiwonder-box-sh: 0px 0px 5px 2px var(--badge-jetank-hiwonder-clr); 
     --badge-jetank-hiwonder-br: 3px solid var(--badge-jetank-hiwonder-clr);
 
-    --badge-default-clr: hsl(0, 0%, 13%);
-    --badge-default-bg-clr: hsl(210, 5%, 74%);
+    --badge-admin-user-clr: hsl(164, 49%, 45%);
+    --badge-admin-user-bg-clr: hsl(206, 32%, 27%);
+    --badge-admin-user-box-sh: 0px 0px 5px 2px var(--badge-admin-user-clr); 
+    --badge-admin-user-br: 3px solid var(--badge-admin-user-clr);
+
+    --badge-normal-user-clr: hsl(59, 83%, 47%);
+    --badge-normal-user-bg-clr: hsl(57, 32%, 27%);
+    --badge-normal-user-box-sh: 0px 0px 5px 2px var(--badge-normal-user-clr); 
+    --badge-normal-user-br: 3px solid var(--badge-normal-user-clr);
+
+    --badge-default-clr: hsl(292, 89%, 51%);
+    --badge-default-bg-clr: hsl(294, 25%, 39%);
     --badge-default-box-sh: 0px 0px 5px 2px var(--badge-default-clr); 
     --badge-default-br: 3px solid var(--badge-default-clr);
     /* Badges */ /* ================================================= */
@@ -115,6 +129,31 @@
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scaleX(0) scaleY(1);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scaleX(1) scaleY(1);
+    }
+}
+
+@keyframes slide-out {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+}
+
 /*
       ______             __                        __                                   
      /      \           /  |                      /  |                                  
@@ -135,6 +174,8 @@ body {
     margin: 0 auto;
     padding: 25px;
     background-color: var(--light-gray);
+    background-image: var(--bsu-bg);
+
 }
 
 h1, h2 {
@@ -172,6 +213,8 @@ textarea {
 }
 
 input[type="text"], 
+input[type="email"], 
+input[type="password"], 
 input[type="number"], 
 select, 
 textarea {
@@ -184,6 +227,8 @@ textarea {
 }
 
 input[type="text"]:focus, 
+input[type="password"]:focus, 
+input[type="email"]:focus, 
 input[type="number"]:focus, 
 select:focus, 
 textarea:focus {
@@ -222,6 +267,11 @@ table {
     overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 
+    tbody {
+        background-color: hsla(204, 70%, 53%, 0.05);
+        border: 3px solid hsla(204, 70%, 53%, 0.4);
+    }
+
     & td, & th {
         padding: 14px;
         text-align: left;
@@ -239,8 +289,26 @@ table {
     }
 
     & tr:hover {
-        background-color: rgba(52, 152, 219, 0.05);
+        background-color: hsla(204, 70%, 53%, 0.05);
     }
+}
+
+dialog {
+    width: 90vw;
+    height: 90vh;
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px 5px hsl(270, 10%, 10%);
+    background: var(--bsu-bg);
+    opacity: 0;
+    
+    transform: translateY(-50px);
+    transition: all 2.5s ease-in-out, opacity 0.3s ease, transform 0.3s ease;
+
+    &::backdrop {
+        backdrop-filter: grayscale(80%) blur(5px);
+    }
+    
 }
 
 /* General selectors */ /* ================================================= */
@@ -270,6 +338,24 @@ table {
     &:hover {
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     }
+
+    &.card-group {
+        display: flex;
+        flex-direction: row;
+        gap: 25px;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+
+        & * {
+            margin-bottom: auto;
+        }
+
+        &:hover {
+            box-shadow: none;
+        }
+    }
+
 
     &.success-message {
         color: var(--success-color);
@@ -339,6 +425,7 @@ table {
 .header {
     display: flex;
     justify-content: space-between;
+    gap: 25px;
     align-items: center;
     margin-bottom: 25px;
 }
@@ -347,15 +434,17 @@ table {
     display: flex;
 
     & a {
+
         margin-left: 20px;
         text-decoration: none;
         color: var(--primary-color);
-        font-weight: 600;
+        font-weight: 1000;
         position: relative;
         padding-bottom: 5px;
         transition: color var(--transition-speed);
 
         &:hover {
+            cursor: pointer;
             color: var(--primary-dark);
         }
 
@@ -370,7 +459,7 @@ table {
             transition: width var(--transition-speed);
         }
 
-        & a:hover::after {
+        &:hover::after {
             width: 100%;
         }
     }
@@ -502,6 +591,20 @@ table {
         border: var(--badge-jetank-hiwonder-br);
         color: white;
     }
+
+    &.badge-admin-user {
+        background-color: var(--badge-admin-user-bg-clr);
+        box-shadow: var(--badge-admin-user-box-sh);
+        border: var(--badge-admin-user-br);
+        color: white;
+    }
+
+    &.badge-normal-user {
+        background-color: var(--badge-normal-user-bg-clr);
+        box-shadow: var(--badge-normal-user-box-sh);
+        border: var(--badge-normal-user-br);
+        color: white;
+    }
 }
 
 
@@ -532,10 +635,10 @@ table {
     font-weight: bold;
     box-shadow: 0 3px 8px rgba(52, 152, 219, 0.3);
     transition: transform var(--transition-speed);
-}
 
-.zone-box:hover {
-    transform: translateY(-3px);
+    &:hover {
+        transform: translateY(-3px);
+    }
 }
 
 .path-arrow {
@@ -547,16 +650,17 @@ table {
     background-repeat: repeat-x;
     position: relative;
     margin: 0 20px;
+
+    &::after {
+        content: '▶';
+        position: absolute;
+        right: -5px;
+        top: -10px;
+        color: #bdc3c7;
+        font-size: 24px;
+    }
 }
 
-.path-arrow::after {
-    content: '▶';
-    position: absolute;
-    right: -5px;
-    top: -10px;
-    color: #bdc3c7;
-    font-size: 24px;
-}
 
 .coordinate-input {
     border: 1px solid var(--border-color);
@@ -571,32 +675,33 @@ table {
     gap: 15px;
     margin-bottom: 15px;
     align-items: center;
+
+    &::before {
+        content: '➤';
+        color: var(--primary-color);
+    }
+
+    & input {
+        width: 100px;
+    }
 }
 
-.coordinate-pair::before {
-    content: '➤';
-    color: var(--primary-color);
-}
 
-.coordinate-pair input {
-    width: 100px;
-}
 
 .add-coordinate-btn {
     background-color: var(--success-color);
     margin-right: 10px;
+    &:hover {
+        background-color: #27ae60;
+    }
 }
 
-.add-coordinate-btn:hover {
-    background-color: #27ae60;
-}
 
 .remove-coordinate-btn {
     background-color: var(--danger-color);
-}
-
-.remove-coordinate-btn:hover {
-    background-color: #c0392b;
+    &:hover {
+        background-color: #c0392b;
+    }
 }
 
 .robot-list {
@@ -634,4 +739,18 @@ table {
     &:hover {
         background-color: #e67e22;
     } 
+}
+
+.closing {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    animation: slide-out 0.4s ease forwards;
+}
+
+.opening {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    animation: slide-in 0.4s ease forwards;
 }

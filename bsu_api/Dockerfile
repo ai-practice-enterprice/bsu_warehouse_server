@@ -5,13 +5,17 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     libzbar0 \
     nodejs \
+    dos2unix \
     npm && \
     rm -rf /var/lib/apt/lists/*
 
 COPY . .
-RUN chmod 777 ./entrypoint.sh
 RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8000
 
-CMD ["/bin/sh","entrypoint.sh" ]
+RUN chmod +x /app/api-entrypoint.sh
+RUN dos2unix /app/api-entrypoint.sh && apt-get --purge remove -y dos2unix && rm -rf /var/lib/apt/lists/*
+
+ENTRYPOINT [ "/app/api-entrypoint.sh" ]
+# CMD ["/bin/bash","/app/api-entrypoint.sh" ]

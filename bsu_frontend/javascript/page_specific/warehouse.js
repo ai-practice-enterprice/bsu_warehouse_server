@@ -90,9 +90,9 @@ async function addchartData(){
 
 }
 
-async function fetchZoneData(zoneId) {
+async function fetchZoneData(zoneID) {
     try {
-        const response = await fetch(`${serverURLPrefix}/zone/data/${zoneId}`, {
+        const response = await fetch(`${serverURLPrefix}/zone/data/${zoneID}`, {
             method: "PATCH",
         });
 

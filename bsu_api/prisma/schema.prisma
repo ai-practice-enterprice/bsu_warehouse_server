@@ -9,7 +9,7 @@ generator client {
 
 model Users {
   userID           Int      @id @default(autoincrement())
-  userName         String
+  userName         String   @unique
   userPassword     String
   userImagePath    String   @default("")
   registrationDate DateTime @default(now())
