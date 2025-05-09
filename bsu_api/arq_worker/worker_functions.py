@@ -1,73 +1,120 @@
-from prisma.models import Robots, Paths, Zones , PackageMovement , Packages , OrderMovement , ZoneTypes
-from fastapi import Depends
-import logging
-from logging import Logger
 import random
-from typing import Any , Annotated
-
+import zenoh
+from typing import Any
+import httpx
+import asyncio
+from logging import Logger
+from prisma.models import Robots, Zones , PackageMovement
 from arq import ArqRedis
-from arq.jobs import Job
 from arq.worker import Retry
 
 
-
 # https://arq-docs.helpmanual.io/#retrying-jobs-and-cancellation
-
 # create the taskqueue functions ===========================================================
-async def process_order(ctx: dict[Any, Any], zone_id: int, package_id: int):
+async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coords: tuple[int, int]):
     log: Logger = ctx["logger"]
-    arq_redis: ArqRedis = ctx["arq_redis"]
+    http_client: httpx.AsyncClient = ctx["http_client"]
+    zenoh_pub: zenoh.Publisher = ctx["zenoh_pub"]
     log.info(f"Attempting to clear package {package_id} from zone {zone_id}...")
 
     # 1) Find an available robot
-    # 1.1) Exception handeling if no robot available => retry +1
-    robots = await Robots.prisma().find_many(
-        where={
-            "AND" : [
-                {
-                    "robotStatus" : True
-                },
-                {
-                    "robotAvailable" : True
-                }
-            ]
-        }
-    )
-    log.info(f"ARQ : Found {len(robots)} free robots.")
+    # 1.1) Exception handling if no robot available => retry +1
+    try:
+        robots = await Robots.prisma().find_many(
+            where={"AND": [
+                {"robotStatus" : True}, {"robotAvailable" : True}
+            ]}
+        )
+        log.info(f"ARQ : Found {len(robots)} free robots.")
 
-    if len(robots) == 0: 
-        raise Retry(defer=ctx['job_try'] * 5)
-        return "no robot is free"
-    else :
+        # 1.2) Exception handling if no robot available => retry == max_retries
+        if len(robots) == 0:
+            raise Retry(defer=ctx['job_try'] * 5)
+            # if ctx['job_try'] < ctx['max_tries']: # If we're not at the max retries yet, retry with a delay
+            #     log.info(f"No robots available, retry {ctx['job_try']}/{ctx['max_tries']}")
+            #     raise Retry(defer=ctx['job_try'] * 5)
+            # else:
+            #     # We've reached max retries, verify if all robots are truly busy
+            #     log.info("Max retries reached. Verifying robot availability in the database...")
+                
+            #     # 1.2.1) Exception handling of no robot available => Query DB to verify
+            #     query_attempts = 0
+            #     max_query_attempts = 4  # Max number of query attempts
+                
+            #     while query_attempts < max_query_attempts:
+            #         try:
+            #             query_attempts += 1
+            #             count_result = await Robots.prisma().count(where={
+            #                 "robotStatus": True
+            #             })
+                        
+            #             robots_busy_count = await Robots.prisma().count(
+            #                 where={
+            #                     "AND": [
+            #                         {"robotStatus": True},
+            #                         {"robotAvailable": False}
+            #                     ]
+            #                 }
+            #             )
+                        
+            #             # Check if query response is OK
+            #             if count_result == robots_busy_count and count_result > 0:
+            #                 # All robots are busy - Query response OK but all robots busy
+            #                 log.warning("Distress call: All robots are busy!")
+                            
+            #                 # Send distress call
+            #                 await send_distress_call(http_client, log, "All robots are busy", is_full_shutdown=False)
+                            
+            #                 # Normal shutdown - set all zones to unavailable
+            #                 await normal_shutdown(log)
+            #                 return "distress call sent - all robots busy"
+                        
+            #             # Some robots should be available soon
+            #             log.info(f"Robots status: {robots_busy_count} busy out of {count_result} total robots")
+            #             # Retry one more time with a longer delay
+            #             raise Retry(defer=30)
+                        
+            #         except Exception as e:
+            #             log.error(f"Database query attempt {query_attempts} failed: {str(e)}")
+            #             if query_attempts >= max_query_attempts:
+            #                 # 1.2.1.1) Query does not work after 4 query tries => Distress call => full shutdown
+            #                 log.critical("Distress call: Database connectivity issues!")
+                            
+            #                 # Send distress call
+            #                 await send_distress_call(http_client, log, "Database connectivity issues", is_full_shutdown=True)
+                            
+            #                 # Full shutdown - set all zones to unavailable and flag DB as down
+            #                 await full_shutdown(log)
+            #                 return "distress call sent - database issues"
+        
+        # If we have robots available, randomly select one
         r1 = random.choice(robots)
-    log.info(f"Choose robot {r1.robotNamespace} to clear package {package_id}...")
-    return "no robot is free"
-    
-    await Robots.prisma().find_many(
-        where={
-            "AND" : [
-                {
-                    "robotStatus" : True
-                },
-                {
-                    "robotAvailable" : True
-                }
-            ]
-        }
-    )
-    # Lorenzo => 
-    # 1.2) Exception handeling if no robot available => retry == max_retries
-    
-    # 1.2.1) Exception handeling of no robot available => Query DB to verify 
-    # 1.2.1.1) Query does not work after 4 query tries ? => Distress call => proceed to full shutdown
-    # 1.2.1.2) Confirmation all robots busy ? => Distress call => proceed to normal shutdown
-
-    # full shutdown => all zones are set to False + Error on dashboard should be displayed that DB is down
-    # normal shutdown => all zones are set to False
-
-    # 2) from the robots use either manhattan distance as a metric or just random.choices (with or without weights)
-    
-    # 3) use httpx to send a htttp request using the GET method for the bsu-ros-server (see docker-compose) to handle and then send to the RosApiBridge
+        log.info(f"Choose robot {r1.robotNamespace} to clear package {package_id}...")
+        
+        # 2) With the robot selected, mark it as unavailable
+        updated_robot = await Robots.prisma().update_many(
+            where={"robotID": r1.robotID, "robotAvailable": True},
+            data={"robotAvailable": False}
+        )
+        if updated_robot == 0:
+            log.error(f"Failed to mark robot {r1.robotNamespace} as unavailable")
+            raise Retry(defer=5)
+        log.info(f"Robot {r1.robotNamespace} marked as unavailable")
+        
+        # 3) Send Zenoh pub
+        try:
+            await asyncio.to_thread(zenoh_pub.put, "") 
+        except Exception as e:
+            log.error(f"Error sending request to RosApiBridge: {str(e)}")
+            await Robots.prisma().update(
+                where={"robotID": r1.robotID},
+                data={"robotAvailable": True}
+            )
+            return "error sending request to robot"
+        
+    except Exception as e:
+        log.error(f"Error processing order: {str(e)}")
+        return f"error processing order: {str(e)}"
 
 
 async def check_for_package_to_move(ctx: dict[Any, Any]):
@@ -80,35 +127,32 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
 
     try:
         log.info("ARQ : Checking for packages to move")
-        new_orders = await PackageMovement.prisma().find_many(
-            where={
-                'zones': {
-                    'zoneTypes': {
-                        'zoneTypeName': 'DropZoneIn'
-                    }
-                }
-            },
-            include={
-                "packages": True,
-                "zones" : True,
-                "zones": {
-                    "include" : {
-                        "zoneTypes" : True
-                    }
-                }, 
+        new_orders = await PackageMovement.prisma().find_many(where={
+            "zones": {
+                "is": { "zoneTypes": {
+                    "is": { "zoneTypeName": "DropZoneIn"}
+                }}
             }
-        )
+        },
+        include={
+            "packages": True,
+            "zones": {
+                "include": {
+                    "zoneTypes": True
+                }
+            }
+        })
         
         log.info(f"ARQ : Found {len(new_orders)} new orders.")
         for pm in new_orders:
             await arq_redis.enqueue_job(
                 "process_order",
-                zone_id = pm.ZoneID,
-                package_id = pm.PackageID
+                zone_id=pm.ZoneID,
+                package_id=pm.PackageID,
+                coords=(pm.zones.zoneX, pm.zones.zoneY)
             )
 
     except Exception as e:
         log.exception(f"ARQ : Error checking for new orders: {e}")
 
 # create the taskqueue functions ===========================================================
-
