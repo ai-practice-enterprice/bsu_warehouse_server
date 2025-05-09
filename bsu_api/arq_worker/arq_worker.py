@@ -2,6 +2,7 @@
 # => https://safir.lsst.io/user-guide/arq.html
 # => https://arq-docs.helpmanual.io/#simple-usage
 import logging
+import json
 import httpx
 import zenoh
 import asyncio
@@ -9,7 +10,7 @@ from arq import cron, create_pool, ArqRedis
 from prisma import Prisma 
 from typing import Any
 
-from .worker_functions import check_for_package_to_move, process_order
+from .worker_functions import check_for_package_to_move, process_order, receive_robot_notification
 from config import ARQ_REDIS_SETTINGS
 from utils.logger import setup_logger
 
@@ -30,8 +31,14 @@ async def startup(ctx: dict[str, Any]):
     await prisma_query_engine.connect()
     ctx["prisma"] = prisma_query_engine
 
-    ctx["zenoh"] = zenoh.open(zenoh.Config())
-    ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("")
+    ctx["zenoh"] = zenoh.open(zenoh.Config.from_json5(json.dumps({
+        "mode": "peer",
+        "connect": {
+            "endpoints": ["tcp/192.168.1.10:7447"]
+        }
+    })))
+    ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("/**/goal_position")
+    ctx["zeno_rec_task"] = asyncio.create_task(asyncio.to_thread(receive_robot_notification, ctx["zenoh"], ctx["logger"]))
 
     # arq == asyn Redis queue 
     # => arq is the same as python's rq library but it uses asynchio on top of it
@@ -46,6 +53,13 @@ async def shutdown(ctx: dict[Any, Any]):
     prisma_query_engine: Prisma = ctx["prisma"]
     arq_redis: ArqRedis = ctx["arq_redis"]
     zenoh_client: zenoh.Session = ctx["zenoh"]
+    pub_task: asyncio.Task = ctx["zeno_rec_task"]
+
+    try:
+        pub_task.cancel()
+        await pub_task
+    except asyncio.CancelledError:
+        log.info("Zenoh receive task cancelled")
 
     log.info("------------ Worker shutdown running ------------")
     try:
