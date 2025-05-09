@@ -79,6 +79,7 @@ async function rectangleCard(zone,badgeClass,reloadMode) {
             </p>
         </div>
     `;
+
     /*  [OPTIONAL] based upon the zone type to change the zone's capacity */
     if (zone.zoneTypes.zoneTypeName.includes("DropZone") || zone.zoneTypes.zoneTypeName.includes("Storage")){
         zoneCard.innerHTML += `
@@ -90,7 +91,7 @@ async function rectangleCard(zone,badgeClass,reloadMode) {
                     <span class="zone-capacity new-capacity">${zone.zoneCapacity}</span>
                 </p>
                 <input type="range" class="zoneCapacity" id="zoneCapacity" name="zoneCapacity" value="${zone.zoneCapacity}" min="0" max="8" step="1"/>
-                <button class="change-type-btn" onclick="changeZoneCapacity(${zone.zoneID})">Change zone capacity</button>
+                <button class="change-type-btn" onclick="changeZoneCapacity(${zone.zoneID},'${reloadMode}')">Change zone capacity</button>
             </div>
         `;
     }
@@ -131,7 +132,6 @@ async function changeZoneCapacity(zoneID,reloadMode) {
             await loadZones(); 
             break;
         case "warehouse map": 
-            await loadWarehouseMap();
             await fetchZoneData(zoneID); 
             break;
         default:
@@ -161,3 +161,76 @@ async function changeZoneType(zoneID,reloadMode) {
             break;
     }
 } 
+
+// Enter a zone (set as checked)
+async function enterZone(zoneID,reloadMode = "card" | "warehouse map") {
+    try {
+        console.log(`Entering zone ${zoneID}`);
+        
+        const response = await fetch(`${serverURLPrefix}/zone/${zoneID}/enter`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Failed to enter zone');
+        }
+        
+        // Reload zones to refresh UI
+        switch (reloadMode) {
+            case "card": 
+                await loadZones(); 
+                break;
+            case "warehouse map": 
+                await loadWarehouseMap();
+                await fetchZoneData(zoneID); 
+                break;
+            default:
+                break;
+        }
+        
+    } catch (error) {
+        console.error('Error entering zone:', error);
+        alert(error.message || 'Failed to enter zone. Please try again.');
+    }
+}
+
+
+// Exit a zone (set as not checked)
+async function exitZone(zoneID,reloadMode = "card" | "warehouse map") {
+    try {
+        console.log(`Exiting zone ${zoneID}`);
+        
+        const response = await fetch(`${serverURLPrefix}/zone/${zoneID}/exit`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Failed to exit zone');
+        }
+        
+        // Reload zones to refresh UI
+        switch (reloadMode) {
+            case "card": 
+                await loadZones(); 
+                break;
+            case "warehouse map": 
+                await loadWarehouseMap();
+                await fetchZoneData(zoneID); 
+                break;
+            default:
+                break;
+        }
+        
+    } catch (error) {
+        console.error('Error exiting zone:', error);
+        alert(error.message || 'Failed to exit zone. Please try again.');
+    }
+}

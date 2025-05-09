@@ -54,7 +54,7 @@ async def lifespan(_) -> AsyncIterator[None]:
     # add fake data to DB =====================================================
     log.info("Starting up : pushing fake data to DB...")
     fake_date_gen = FakeDataGenerator(
-        push_packages = True,
+        push_packages = False,
         push_zones = True,
         push_robots = True,
         push_paths = True,

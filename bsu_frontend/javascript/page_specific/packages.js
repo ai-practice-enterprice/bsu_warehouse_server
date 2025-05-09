@@ -2,10 +2,9 @@ const dataContainer = document.getElementById("data-holder");
 const domainSlider = document.getElementById("domainSlider");
 const calendarOptionsContainer = document.getElementById("calendar-options"); 
 calendarOptionsContainer.style.display = "None";
-const lineChartOptionsContainer = document.getElementById("line-chart-options"); 
-lineChartOptionsContainer.style.display = "None";
 const tabNav = document.getElementById("tabs-nav");
 const tabChartNav = document.getElementById("tabs-chart-nav");
+
 const response = fetch(`${serverURLPrefix}/package/all?group_by=day`, {
     method: "GET",
     headers: {
@@ -56,12 +55,10 @@ tabNav.addEventListener("click",async (e) => {
     switch (e.target.getAttribute("data-tab-id")) {
         case "tab-1": 
             calendarOptionsContainer.style.display = "none";
-            lineChartOptionsContainer.style.display = "block";
             getPackageIntakeData(mode="line chart"); 
             break;
         case "tab-2": 
             calendarOptionsContainer.style.display = "none";
-            lineChartOptionsContainer.style.display = "block";
             getPackageStorageData(mode="line chart"); 
             break;
         default:
@@ -101,12 +98,10 @@ async function getPackageIntakeData(mode="calendar"){
     switch (mode) {
         case "calendar":
             calendarOptionsContainer.style.display = "block";
-            lineChartOptionsContainer.style.display = "none";
             renderPackageIntakeCalendarChart(initialDomainExtent);            
             break;
         case "line chart":
             calendarOptionsContainer.style.display = "none";
-            lineChartOptionsContainer.style.display = "block";
             renderPackageIntakeLineChart();
             break;
         default:
@@ -123,12 +118,10 @@ async function getPackageStorageData(mode="calendar"){
     switch (mode) {
         case "calendar":
             calendarOptionsContainer.style.display = "block";
-            lineChartOptionsContainer.style.display = "none";
             renderPackageStorageCalendarChart();
             break;
         case "line chart":
             calendarOptionsContainer.style.display = "none";
-            lineChartOptionsContainer.style.display = "block";
             renderPackageStorageLineChart();
             break;
         default:
@@ -172,6 +165,8 @@ function renderPackageIntakeLineChart() {
 function renderPackageIntakeCalendarChart(domainExtent) {
     dataContainer.innerHTML = "";
     const chart = Plot.plot({
+        width: 1000,
+        height: 500,
         padding: 0,
         x: { axis: null },
         y: { tickFormat: Plot.formatWeekday("en", "narrow"), tickSize: 0 },

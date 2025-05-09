@@ -96,7 +96,8 @@ async def read_zones_of_type(
 
     zones = await Zones.prisma().find_many(
         where={"zoneType": zone_type_record.zoneTypeID},
-        include={"zoneTypes":True}
+        include={"zoneTypes":True},
+        order={"zoneID":"asc"},
     )
     return zones
 

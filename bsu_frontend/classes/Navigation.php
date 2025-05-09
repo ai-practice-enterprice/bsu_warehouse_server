@@ -20,6 +20,8 @@ class Navigation {
                 <a href="./bsu.php?navigate_to=occupancy">&Oopf; Occupancy</a>
                 <a href="./bsu.php?navigate_to=packages">&Popf; Packages</a>
                 <a href="./bsu.php?navigate_to=warehouse">&Wopf; Warehouse</a>
+                <a href="./bsu.php?navigate_to=users">&Uopf; Users</a>
+                <a href="./bsu.php?navigate_to=mailbox">&Mopf; Mailbox</a>
                 <a href="./bsu.php?logout=true">&rarrhk; Logout</a>
             </div>
         </div>

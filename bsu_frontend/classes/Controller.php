@@ -130,6 +130,8 @@ class Controller {
             case 'packages':    
             case 'warehouse':   
             case 'zones':       
+            case 'users':       
+            case 'mailbox':       
                 if($this->loginStatus == true){
                     require_once("./bsu/".$pageToRedirectTo.".php"); 
                 } else {
