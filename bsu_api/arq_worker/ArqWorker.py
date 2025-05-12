@@ -37,7 +37,7 @@ async def startup(ctx: dict[str, Any]):
             "endpoints": ["tcp/192.168.1.10:7447"]
         }
     })))
-    ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("/**/goal_position")
+    ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("**/goal_position")
     ctx["zeno_rec_task"] = asyncio.create_task(asyncio.to_thread(receive_robot_notification, ctx["zenoh"], ctx["logger"]))
 
     # arq == asyn Redis queue 
