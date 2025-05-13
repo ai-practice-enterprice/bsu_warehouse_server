@@ -4,23 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ subject }}</title>
+
+    {{ general_style }}
+
     <style>
-        body {
-            font-family: 'Courier New', Courier, monospace, Roboto, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            background-color: #ffffff;
-            max-width: 600px;
-            margin: 30px auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
         .header {
             background-color: #2ecc40;
             color: white;
@@ -28,21 +15,13 @@
             text-align: center;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-
-        .content {
-            padding: 30px;
-            color: #333333;
-        }
 
         .content h2 {
             color: #2ecc40;
         }
 
-        .status , .message {
+        .status,
+        .message {
             background-color: #e8f8ec;
             border-left: 4px solid #2ecc40;
             padding: 15px;
@@ -50,13 +29,6 @@
             border-radius: 5px;
             font-family: monospace;
             color: #218c3a;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            color: #888;
-            padding: 20px;
         }
     </style>
 </head>
@@ -86,13 +58,13 @@
 
         </div>
 
-        <div>
-            <div>
-                {{ logo }}
-            </div>
-            <p>Thank you for using the ROS2 Monitoring Service.</p>
+        <div class="departement-message">
+        <div class="departement-logo">
+            <img src="https://media-hosting.imagekit.io/af87e0ce2a41408d/bsu_ai_dep.svg?Expires=1841736323&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=VVdVOlZWA9k~RTI15Y7nHHcD~NzBocA-XdAR9xXy4gpoII-56hf~cYdMElA7vbhzZ6M1bA3LyhcWx4j4PueaAHgbkjnfpW2MZtJHAK-hyLAvqrLq7L4w6FaInLbjkj7QbjjVeOvgEDCrx~83PhIZwNdIeKkvtrV5-MyCHSD9IGxtwRfRhtwGkMOhaEZLB17f8CR3JXLNCEmM-FTX9e6gfwjfT0hpJLep9R9J4zNf3hU3xkCw~FF9uW68sGKCuckdJrEuiIKfYFxm230v5xz0ajR9xtb4whkPP0nBuMwp6A0nyUVmRDX3TP3ulojImhl7uWcUbUcwRAnS5CK~ODBfkQ__" alt="logo_dep">
         </div>
-        
+        Thank you for using the ROS2 Monitoring Service
+        </div>
+
         <div class="footer">
             &copy; {{ year }} BSU | Confirmation Service
         </div>

@@ -35,8 +35,8 @@ class JinjaEmailTemplateBuilder:
     with open(email_path, "r") as file:
       template_str = file.read()
 
-    with open(os.path.join(script_path,"email_templates","bsu_ai_dep.svg"),"r") as file:
-      self.logo_str = file.read()
+    with open(os.path.join(script_path,"email_templates","general_email_style.txt"),"r") as file:
+      self.css_str = file.read()
 
 
     self.jinja_template: Template = Template(template_str)
@@ -56,7 +56,7 @@ class JinjaEmailTemplateBuilder:
         "status": status,
         "message": robot_message,
         "year": str(datetime.now().year),
-        "logo": self.logo_str,
+        "general_style": self.css_str,
       }
 
     elif self.email_type == EmailType.WARNING:
@@ -67,7 +67,7 @@ class JinjaEmailTemplateBuilder:
         "status": status,
         "message": robot_message,
         "year": str(datetime.now().year),
-        "logo": self.logo_str,
+        "general_style": self.css_str,
       }
     
     elif self.email_type == EmailType.REQUEST:
@@ -78,7 +78,7 @@ class JinjaEmailTemplateBuilder:
         "status": status,
         "message": robot_message,
         "year": str(datetime.now().year),
-        "logo": self.logo_str,
+        "general_style": self.css_str,
       }
 
     elif self.email_type == EmailType.CONFIRMATION:
@@ -89,7 +89,7 @@ class JinjaEmailTemplateBuilder:
         "status": status,
         "message": robot_message,
         "year": str(datetime.now().year),
-        "logo": self.logo_str,
+        "general_style": self.css_str,
       }
 
 
