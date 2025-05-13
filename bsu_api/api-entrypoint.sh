@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # YOU MIGHT HAVE TO CHANGE THIS FILE LINE ENDINGS FROM WINDOWS LINE ENDINGS (/r/n) to LINUX LINE ENDINGS (/n)
-# normally i use "dos2unix" in the dockerfile to be sure but if you encounter some p 
+# normally i use "dos2unix" in the dockerfile to be sure but if you encounter some prombloms
+
+# if problems with docker compose occur change the permissions of this file to exectubale rights
 
 # https://prisma-client-py.readthedocs.io/en/stable/getting_started/quickstart/
 # The db push command also generates the client for you. 

@@ -6,7 +6,7 @@
   <title>{{ subject }}</title>
   <style>
     body {
-      font-family: "Segoe UI", Roboto, sans-serif;
+      font-family: 'Courier New', Courier, monospace, Roboto, sans-serif;
       background-color: #f4f4f4;
       margin: 0;
       padding: 0;
@@ -42,7 +42,8 @@
       color: #005dab;
     }
 
-    .status {
+    .status,
+    .message {
       background-color: #e6f4ff;
       border-left: 4px solid #005dab;
       padding: 15px;
@@ -62,7 +63,7 @@
 
 <body>
   <div class="container">
-    
+
     <div class="header">
       <h1>🤖 {{ header_title }}</h1>
     </div>
@@ -70,7 +71,7 @@
     <div class="content">
       <h2>Status Update: Robot "{{ robot_namespace }}"</h2>
       <p>Here is the latest system report from your ROS2 robot:</p>
-      
+
       <div class="status">
         Status: <span>{{ status }}</span><br>
       </div>
@@ -79,14 +80,19 @@
         <p>{{ message }}</p>
       </div>
 
+    </div>
+
+    <div>
+      <div>
+        {{ logo }}
+      </div>
       <p>Thank you for using the ROS2 Monitoring Service.</p>
-      <p>ROS2 Notification System</p>
     </div>
 
     <div class="footer">
       &copy; {{ year }} BSU | ROS2 Monitoring System
     </div>
-  
+
   </div>
 </body>
 

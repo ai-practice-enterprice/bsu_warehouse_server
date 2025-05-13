@@ -10,7 +10,8 @@ from logging import Logger
 from prisma.models import Robots, Zones , PackageMovement, OrderMovement
 from arq import ArqRedis
 from arq.worker import Retry
-from .emailTemplates import JinjaEmailTemplateBuilder
+from .emailTemplates import JinjaEmailTemplateBuilder , EmailType
+from pycdr import cdr
 
 # https://arq-docs.helpmanual.io/#retrying-jobs-and-cancellation
 # create the taskqueue functions ===========================================================
@@ -196,41 +197,76 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
 # create the taskqueue functions ===========================================================
 
 
+
+# !!!!! This classes should match the ROS2 messages send by the robots
+
+@cdr
+class NotificationServer:
+    robot_namespace: str
+    robot_message: str
+    message_type: str
+
+    
 def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
     """
     This function handles the notification from the robot
     """
+
+    # ---------------------------------------------------- #
     def callback(sample: zenoh.Sample):
 
-        builder = JinjaEmailTemplateBuilder()
-
-
-        url = 'http://192.168.1.20:8000/sendmail'
-        data = {
-            "token"         : "knhqwYD2gwJm2zEmXgbrDh",
-            "destination"   : "AI@blueskyunlimited.org",
-            "subject"       : "test-api",
-            "content"       : builder.render(
-                robot_namespace="/a_robot",
-                message=sample.payload.to_string(),
-            )
-        }
-        # here we should handle the namespace so we know which robot sent the notification
-        log.info(f"Received notification from robot: {sample.payload.to_string()}")
-        
         try:
-            # subscriber.payload.
+
+            notification: NotificationServer = NotificationServer.deserialize(sample.payload.to_bytes())
+            # here we should handle the namespace so we know which robot sent the notification
+            # sample.key_expr => full topic name e.g.: /jetank_1/to_server
+            log.info(
+                f"""
+                \nReceived notification from robot: {sample.key_expr}
+                \nFull Message: 
+                \n\t robot namespace : {notification.robot_namespace}
+                \n\t message type    : {notification.message_type.upper()}
+                \n\t robot message   : {notification.robot_message}
+                """
+            )
+
+            email_type = EmailType.INFO
+            if notification.message_type.upper() == "INFO": email_type = EmailType.INFO
+            elif notification.message_type.upper() == "WARNING": email_type = EmailType.WARNING
+            elif notification.message_type.upper() == "REQUEST": email_type = EmailType.REQUEST
+            elif notification.message_type.upper() == "CONFIRMATION": email_type = EmailType.CONFIRMATION
+            else: email_type = EmailType.INFO
+            log.info(f"\nEmail type: {email_type}\n")
+
+            builder = JinjaEmailTemplateBuilder(email_type)
+            url = 'http://192.168.1.20:8000/sendmailhtml'
+            # url = 'http://192.168.1.20:8000/sendmail'
+            headers = {
+                'Content-Type': 'application/json',
+            }
+
+            data = {
+                "token"         : "knhqwYD2gwJm2zEmXgbrDh",
+                "destination"   : "AI@blueskyunlimited.org",
+                "subject"       : "test-api",
+                "content"       : builder.render(
+                    robot_namespace = notification.robot_namespace,
+                    robot_message = notification.robot_message,
+                ),
+            }
+
             json_data = json.dumps(data)
-            response = requests.post(url, data=json_data)
+            response = requests.post(url, data=json_data,headers=headers)
 
-            print(response.status_code)
+            log.info(f"{response.status_code}")
             if response.status_code != 200:
-                # print(response.text)
-                print(response.json())
-
+                log.info(f"{response.json()}")
         except requests.exceptions.RequestException as e:
-            print(f"An error occurred: {e}")
+            log.warning(f"An error occurred: {e}")
+    # ---------------------------------------------------- #
     
+
+
     subscriber = zenoh_client.declare_subscriber("**/to_server", callback)
     log.info("Zenoh subscriber declared for robot notifications")
 

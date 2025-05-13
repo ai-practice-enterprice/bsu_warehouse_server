@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ subject }}</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace, Roboto, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: 30px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #2ecc40;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 30px;
+            color: #333333;
+        }
+
+        .content h2 {
+            color: #2ecc40;
+        }
+
+        .status , .message {
+            background-color: #e8f8ec;
+            border-left: 4px solid #2ecc40;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            color: #218c3a;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        
+        <div class="header">
+            <h1>✅ {{ header_title }}</h1>
+        </div>
+
+        <div class="content">
+            <h2>Confirmation robot: {{ robot_namespace }}</h2>
+            <p>Your request has been successfully processed.</p>
+            
+            <div class="status">
+                Status: <span>{{ status }}</span><br>
+            </div>
+
+            <div class="message">
+                <p>{{ message }}</p>
+            </div>
+
+            <p>Thank you for your action. If you have any questions, please contact our support team.</p>
+            <p>Best regards,</p>
+            <p>BSU AI departement</p>
+
+        </div>
+
+        <div>
+            <div>
+                {{ logo }}
+            </div>
+            <p>Thank you for using the ROS2 Monitoring Service.</p>
+        </div>
+        
+        <div class="footer">
+            &copy; {{ year }} BSU | Confirmation Service
+        </div>
+    
+    </div>
+</body>
+
+</html>
