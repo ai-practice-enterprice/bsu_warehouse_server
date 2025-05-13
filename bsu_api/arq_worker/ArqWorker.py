@@ -37,8 +37,8 @@ async def startup(ctx: dict[str, Any]):
             "endpoints": ["tcp/192.168.1.10:7447"]
         }
     })))
-    ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("/**/goal_position")
-    ctx["zeno_rec_task"] = asyncio.create_task(asyncio.to_thread(receive_robot_notification, ctx["zenoh"], ctx["logger"]))
+    ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("**/goal_position")
+    ctx["zenoh_rec_task"] = asyncio.create_task(asyncio.to_thread(receive_robot_notification, ctx["zenoh"], ctx["logger"]))
 
     # arq == asyn Redis queue 
     # => arq is the same as python's rq library but it uses asynchio on top of it
@@ -53,32 +53,42 @@ async def shutdown(ctx: dict[Any, Any]):
     prisma_query_engine: Prisma = ctx["prisma"]
     arq_redis: ArqRedis = ctx["arq_redis"]
     zenoh_client: zenoh.Session = ctx["zenoh"]
-    pub_task: asyncio.Task = ctx["zeno_rec_task"]
+    pub_task: asyncio.Task = ctx["zenoh_rec_task"]
 
     try:
         pub_task.cancel()
         await pub_task
+        log.info("Zenoh task cancelled")
+
     except asyncio.CancelledError:
-        log.info("Zenoh receive task cancelled")
+        log.info("Zenoh receive cancelled task => cancelled error")
 
     log.info("------------ Worker shutdown running ------------")
     try:
         await async_http_client.aclose()
+        log.info("closing the http_client")
+
     except Exception as e:
         log.warning("Issue closing the http_client : %s", str(e))
 
     try:
         await prisma_query_engine.disconnect()
+        log.info("closing the prisma query engine")
+
     except Exception as e:
         log.warning("Issue closing the prisma query engine : %s", str(e))
 
     try:
         await arq_redis.close()
+        log.info("closing the ArqRedis instance")
+    
     except Exception as e:
         log.warning("Issue closing the ArqRedis instance : %s", str(e))
 
     try:
         zenoh_client.close()
+        log.warning("closing the zenoh client")
+
     except Exception as e:
         log.warning("Issue closing the zenoh client : %s", str(e))
 

@@ -1,3 +1,3 @@
 <?php
-    header("Location: ./bsu_main.php");
+    header("Location: ./bsu.php");
 ?>

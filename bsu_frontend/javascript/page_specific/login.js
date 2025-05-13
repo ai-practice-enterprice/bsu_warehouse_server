@@ -9,7 +9,7 @@ document.addEventListener("submit", (event) => {
     formData.append("execute_request",inputId);
     formData.append("formClass",formElement.classList);
 
-    fetch("./bsu.php",{
+    fetch(ApacheServerURLPrefix,{
         method: "post",
         body: formData
     })
@@ -19,7 +19,7 @@ document.addEventListener("submit", (event) => {
     .then(
         (responseJsonFormatted) => {
             if(responseJsonFormatted.newlocation){
-                window.location.assign("bsu.php");
+                window.location.assign(ApacheServerURLPrefix);
             }
             responseCard = document.getElementById("responseCard");
             responseCard.setAttribute("class","card " + responseJsonFormatted.class);

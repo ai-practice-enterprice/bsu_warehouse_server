@@ -4,11 +4,14 @@ import time
 from typing import Any
 import httpx
 import asyncio
+import requests
+import json
 from logging import Logger
 from prisma.models import Robots, Zones , PackageMovement, OrderMovement
 from arq import ArqRedis
 from arq.worker import Retry
-
+from .emailTemplates import JinjaEmailTemplateBuilder , EmailType
+from pycdr import cdr
 
 # https://arq-docs.helpmanual.io/#retrying-jobs-and-cancellation
 # create the taskqueue functions ===========================================================
@@ -194,13 +197,78 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
 # create the taskqueue functions ===========================================================
 
 
+
+# !!!!! This classes should match the ROS2 messages send by the robots
+
+@cdr
+class NotificationServer:
+    robot_namespace: str
+    robot_message: str
+    message_type: str
+
+    
 def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
     """
     This function handles the notification from the robot
     """
+
+    # ---------------------------------------------------- #
     def callback(sample: zenoh.Sample):
-        # here we should handle the namespace so we know which robot sent the notification
-        log.info(f"Received notification from robot: {sample}")
+
+        try:
+
+            notification: NotificationServer = NotificationServer.deserialize(sample.payload.to_bytes())
+            # here we should handle the namespace so we know which robot sent the notification
+            # sample.key_expr => full topic name e.g.: /jetank_1/to_server
+            log.info(
+                f"""
+                \nReceived notification from robot: {sample.key_expr}
+                \nFull Message: 
+                \n\t robot namespace : {notification.robot_namespace}
+                \n\t message type    : {notification.message_type.upper()}
+                \n\t robot message   : {notification.robot_message}
+                """
+            )
+
+            email_type = EmailType.INFO
+            if notification.message_type.upper() == "INFO": email_type = EmailType.INFO
+            elif notification.message_type.upper() == "WARNING": email_type = EmailType.WARNING
+            elif notification.message_type.upper() == "REQUEST": email_type = EmailType.REQUEST
+            elif notification.message_type.upper() == "CONFIRMATION": email_type = EmailType.CONFIRMATION
+            else: email_type = EmailType.INFO
+            log.info(f"\nEmail type: {email_type}\n")
+
+            builder = JinjaEmailTemplateBuilder(email_type)
+            url = 'http://192.168.1.20:8000/sendmailhtml'
+            # url = 'http://192.168.1.20:8000/sendmail'
+            headers = {
+                'Content-Type': 'application/json',
+            }
+
+            # "SSS@blueskyunlimited.org","AD@blueskyunlimited.org"
+            for destination in ["AI@blueskyunlimited.org"]: 
+                data = {
+                    "token"         : "knhqwYD2gwJm2zEmXgbrDh",
+                    "destination"   : destination,
+                    "subject"       : "test-api",
+                    "content"       : builder.render(
+                        robot_namespace = notification.robot_namespace,
+                        robot_message = notification.robot_message,
+                    ),
+                }
+
+                json_data = json.dumps(data)
+                response = requests.post(url, data=json_data,headers=headers)
+
+                log.info(f"{response.status_code}")
+                if response.status_code != 200:
+                    log.info(f"{response.json()}")
+
+        except requests.exceptions.RequestException as e:
+            log.warning(f"An error occurred: {e}")
+    # ---------------------------------------------------- #
+    
+
 
     subscriber = zenoh_client.declare_subscriber("**/to_server", callback)
     log.info("Zenoh subscriber declared for robot notifications")
@@ -210,3 +278,4 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
             time.sleep(1)
         except:
             break
+

@@ -34,6 +34,7 @@
     </div>
     <div class="card" id="responseCard"></div>
 
+    <script src="../javascript/general_config.js"></script>
     <script src="../javascript/page_specific/login.js"></script>
 </body>
 </html>
