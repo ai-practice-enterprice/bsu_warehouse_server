@@ -245,22 +245,25 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
                 'Content-Type': 'application/json',
             }
 
-            data = {
-                "token"         : "knhqwYD2gwJm2zEmXgbrDh",
-                "destination"   : "AI@blueskyunlimited.org",
-                "subject"       : "test-api",
-                "content"       : builder.render(
-                    robot_namespace = notification.robot_namespace,
-                    robot_message = notification.robot_message,
-                ),
-            }
+            # "SSS@blueskyunlimited.org","AD@blueskyunlimited.org"
+            for destination in ["AI@blueskyunlimited.org"]: 
+                data = {
+                    "token"         : "knhqwYD2gwJm2zEmXgbrDh",
+                    "destination"   : destination,
+                    "subject"       : "test-api",
+                    "content"       : builder.render(
+                        robot_namespace = notification.robot_namespace,
+                        robot_message = notification.robot_message,
+                    ),
+                }
 
-            json_data = json.dumps(data)
-            response = requests.post(url, data=json_data,headers=headers)
+                json_data = json.dumps(data)
+                response = requests.post(url, data=json_data,headers=headers)
 
-            log.info(f"{response.status_code}")
-            if response.status_code != 200:
-                log.info(f"{response.json()}")
+                log.info(f"{response.status_code}")
+                if response.status_code != 200:
+                    log.info(f"{response.json()}")
+
         except requests.exceptions.RequestException as e:
             log.warning(f"An error occurred: {e}")
     # ---------------------------------------------------- #
