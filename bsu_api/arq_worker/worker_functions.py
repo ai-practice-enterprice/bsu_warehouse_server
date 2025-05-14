@@ -125,7 +125,8 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
         
         # 3) Send Zenoh pub to tell robot to move
         try:
-            await asyncio.to_thread(zenoh_pub.put, str(coords))
+            payload = NotificationClient(robot_namespace=r1.robotNamespace, package_id=package_id, x=coords[0], y=coords[1]).serialize()
+            await asyncio.to_thread(zenoh_pub.put, payload)
         except Exception as e:
             log.error(f"Error sending request to RosApiBridge: {str(e)}")
             # Revert robot availability
@@ -206,7 +207,15 @@ class NotificationServer:
     robot_message: str
     message_type: str
 
-    
+
+@cdr
+class NotificationClient:
+    robot_namespace: str
+    package_id: int
+    x: int
+    y: int
+
+
 def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
     """
     This function handles the notification from the robot
