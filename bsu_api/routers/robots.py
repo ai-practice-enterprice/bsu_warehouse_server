@@ -31,7 +31,7 @@ async def create_robot(robot: RobotCreationRequest):
     new_robot = await Robots.prisma().create(
         data={
             "robotNamespace": robot.robot_namespace,
-            "robotType": robot_type_id,
+            "robotType": robot_type_id.robotTypeID,
             "robotStatus": robot.robot_status
         },
         include={"robotTypes":True}

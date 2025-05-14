@@ -101,7 +101,7 @@ async function rectangleCard(zone,badgeClass,reloadMode) {
             <label for="zoneType">Zone Type</label>
             ${selectHTML}
             <button class="change-type-btn" onclick="changeZoneType(${zone.zoneID},'${reloadMode}')">Change zone function</button>
-            <input type="number" name="courierID" id="courrierID" placeholder="Courier ID" min="0" max="100"/>
+            <input type="number" name="courierID_${zone.zoneID}" id="courrierID_${zone.zoneID}" placeholder="Courier ID" min="0" max="100"/>
         </div>
     `;
 
@@ -110,8 +110,8 @@ async function rectangleCard(zone,badgeClass,reloadMode) {
     if (zone.zoneTypes.zoneTypeName.includes("DropZone")){
         zoneCard.innerHTML += `<div class="zone-actions">
             ${zone.zoneAvailable 
-                ? `<button class="success-btn" onclick="enterZone(${zone.zoneID}, document.getElementById('courrierID').value, '${reloadMode}')">Enter Zone</button>`
-                : `<button class="danger-btn" onclick="exitZone(${zone.zoneID}, document.getElementById('courrierID').value, '${reloadMode}')">Exit Zone</button>`
+                ? `<button class="success-btn" onclick="enterZone(${zone.zoneID}, document.getElementById('courrierID_${zone.zoneID}').value, '${reloadMode}')">Enter Zone</button>`
+                : `<button class="danger-btn" onclick="exitZone(${zone.zoneID}, '${reloadMode}')">Exit Zone</button>`
             }
         </div>`
     }

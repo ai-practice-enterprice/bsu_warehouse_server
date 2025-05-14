@@ -32,7 +32,7 @@ async function rowCard(robot) {
     const row = document.createElement('tr');
     row.innerHTML = `
         <td>${robot.robotID}</td>
-        <td>${robot.robotTypeName}</td>
+        <td>${robot.robotTypes.robotTypeName}</td>
         <td>${robot.robotNamespace}</td>
         <td>${robotCreationDate}</td>
         <td><span class="${robot.robotStatus ? 'status-active' : 'status-inactive'}">${robot.robotStatus ? 'Active' : 'Inactive'}</span></td>
