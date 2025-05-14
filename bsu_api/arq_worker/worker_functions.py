@@ -3,6 +3,7 @@ import zenoh
 import time
 from typing import Any
 import httpx
+import json
 import asyncio
 import requests
 import json
@@ -125,7 +126,7 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
         
         # 3) Send Zenoh pub to tell robot to move
         try:
-            payload = NotificationClient(robot_namespace=r1.robotNamespace, package_id=package_id, x=coords[0], y=coords[1]).serialize()
+            payload = json.dumps({"robot_namespace": r1.robotNamespace, "package_id": package_id, "x": coords[0], "y": coords[1]})
             await asyncio.to_thread(zenoh_pub.put, payload)
         except Exception as e:
             log.error(f"Error sending request to RosApiBridge: {str(e)}")
@@ -201,20 +202,6 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
 
 # !!!!! This classes should match the ROS2 messages send by the robots
 
-@cdr
-class NotificationServer:
-    robot_namespace: str
-    robot_message: str
-    message_type: str
-
-
-@cdr
-class NotificationClient:
-    robot_namespace: str
-    package_id: int
-    x: int
-    y: int
-
 
 def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
     """
@@ -226,24 +213,24 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
 
         try:
 
-            notification: NotificationServer = NotificationServer.deserialize(sample.payload.to_bytes())
+            notification = json.loads(sample.payload.to_string())
             # here we should handle the namespace so we know which robot sent the notification
             # sample.key_expr => full topic name e.g.: /jetank_1/to_server
             log.info(
                 f"""
                 \nReceived notification from robot: {sample.key_expr}
                 \nFull Message: 
-                \n\t robot namespace : {notification.robot_namespace}
-                \n\t message type    : {notification.message_type.upper()}
-                \n\t robot message   : {notification.robot_message}
+                \n\t robot namespace : {notification["robot_namespace"]}
+                \n\t message type    : {notification["message_type"].upper()}
+                \n\t robot message   : {notification["robot_message"]}
                 """
             )
 
             email_type = EmailType.INFO
-            if notification.message_type.upper() == "INFO": email_type = EmailType.INFO
-            elif notification.message_type.upper() == "WARNING": email_type = EmailType.WARNING
-            elif notification.message_type.upper() == "REQUEST": email_type = EmailType.REQUEST
-            elif notification.message_type.upper() == "CONFIRMATION": email_type = EmailType.CONFIRMATION
+            if notification["message_type"].upper() == "INFO": email_type = EmailType.INFO
+            elif notification["message_type"].upper() == "WARNING": email_type = EmailType.WARNING
+            elif notification["message_type"].upper() == "REQUEST": email_type = EmailType.REQUEST
+            elif notification["message_type"].upper() == "CONFIRMATION": email_type = EmailType.CONFIRMATION
             else: email_type = EmailType.INFO
             log.info(f"\nEmail type: {email_type}\n")
 
