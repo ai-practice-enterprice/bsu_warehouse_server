@@ -34,7 +34,9 @@ async def send_data():
         try:
             while True:
                 data = await queue.get()
-                yield f"data: {data}\n\n"
+                lines = data.splitlines()
+                sse_data = "".join(f"data: {line}\n" for line in lines)
+                yield f"{sse_data}\n"
                 queue.task_done()
         finally:
             clients.pop(client_id, None)
