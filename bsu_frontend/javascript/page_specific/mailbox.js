@@ -1,9 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadSavedNotifications();
     initializeSSE();
+    initializeClearButton();
 });
 
-// Save a notification to localStorage
+function initializeClearButton() {
+    const clearButton = document.getElementById('clear-notifications');
+    clearButton.addEventListener('click', function() {
+        localStorage.removeItem('robotNotifications');
+        if (confirm('Are you sure you want to clear all notifications?')) {
+            setTimeout(() => {
+                location.reload();
+            }, 300);
+        }
+    });
+}
+
 function saveNotification(content, timestamp) {
     const notifications = JSON.parse(localStorage.getItem('robotNotifications') || '[]');
     notifications.push({
@@ -11,9 +23,8 @@ function saveNotification(content, timestamp) {
         timestamp: timestamp
     });
     
-    // Limit to 100 messages to prevent localStorage from getting too full
-    if (notifications.length > 100) {
-        notifications.shift(); // Remove oldest notification
+    if(notifications.length > 100) {
+        notifications.shift();
     }
     
     localStorage.setItem('robotNotifications', JSON.stringify(notifications));
@@ -29,13 +40,13 @@ function loadSavedNotifications() {
             mailboxContainer.removeChild(waitingMessage);
         }
 
-        savedNotifications.forEach(notification => {
+        // Display notifications from newest to oldest
+        savedNotifications.reverse().forEach(notification => {
             displayNotification(notification.content, notification.timestamp, false);
         });
     }
 }
 
-// Universal display function that works for both new and saved notifications
 function displayNotification(content, timestamp, isNew = true) {
     const mailboxContainer = document.getElementById('mailbox-container');
 

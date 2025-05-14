@@ -311,7 +311,7 @@ async def enter_zone(zone_id: int, courrier_id: Annotated[int, Body(embed=True, 
 
 
 @router.patch("/zone/{zone_id}/exit")
-async def exit_zone(zone_id: int, courrier_id: Annotated[int, Body(embed=True, alias="courrierID")]):
+async def exit_zone(zone_id: int):
     """
     Mark a zone as exited
     """
