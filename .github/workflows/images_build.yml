@@ -23,12 +23,12 @@ jobs:
 
       - name: Build and push API image
         run: |
-          docker build -t bsu-api ./bsu_warehouse_server/bsu_api/
+          docker build -t bsu-api ./bsu_api/
           docker tag bsu-api ${{ secrets.DOCKER_USERNAME }}/bsu-warehouse:api-latest
           docker push ${{ secrets.DOCKER_USERNAME }}/bsu-warehouse:api-latest
 
       - name: Build and push Frontend image
         run: |
-          docker build -t bsu-frontend ./bsu_warehouse_server/bsu_frontend/
+          docker build -t bsu-frontend ./bsu_frontend/
           docker tag bsu-frontend ${{ secrets.DOCKER_USERNAME }}/bsu-warehouse:frontend-latest
           docker push ${{ secrets.DOCKER_USERNAME }}/bsu-warehouse:frontend-latest
