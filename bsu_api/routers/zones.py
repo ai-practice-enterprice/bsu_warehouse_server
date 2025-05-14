@@ -1,7 +1,7 @@
 import os
 import random
 
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Query, HTTPException, Body
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from prisma.models import Zones , PackageMovement , Packages , OrderMovement , ZoneTypes
@@ -244,7 +244,7 @@ async def change_zone_type(zone_id: int,new_zone_type: str):
     return {"status" : "success"}
 
 @router.patch("/zone/{zone_id}/enter")
-async def enter_zone(zone_id: int,courrier_id: int = 1):
+async def enter_zone(zone_id: int, courrier_id: Annotated[int, Body(embed=True, alias="courrierID")]):
     """
     Mark a zone as entered
     """
@@ -261,9 +261,6 @@ async def enter_zone(zone_id: int,courrier_id: int = 1):
     try:
         # REAL
         # packages_fetched = httpx.get(url=f"http://bsu-ad-server/courriers?courrierID={courrier_id}")
-
-        # FAKE
-        courrier_id = random.randint(1,20)
         packages_fetched = fetch_fake_remote_packagedata_from_AD_team(courrier_id)
 
     except Exception as e:
@@ -314,7 +311,7 @@ async def enter_zone(zone_id: int,courrier_id: int = 1):
 
 
 @router.patch("/zone/{zone_id}/exit")
-async def exit_zone(zone_id: int):
+async def exit_zone(zone_id: int, courrier_id: Annotated[int, Body(embed=True, alias="courrierID")]):
     """
     Mark a zone as exited
     """

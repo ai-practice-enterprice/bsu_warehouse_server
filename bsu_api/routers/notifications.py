@@ -3,6 +3,7 @@ import uuid
 from fastapi import APIRouter, File
 from fastapi.responses import StreamingResponse
 from typing import Annotated
+from arq_worker.emailTemplates import JinjaEmailTemplateBuilder, EmailType
 
 
 router = APIRouter(prefix="/notification", tags=["Fake Data"])

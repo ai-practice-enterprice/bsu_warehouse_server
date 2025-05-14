@@ -101,6 +101,7 @@ async function rectangleCard(zone,badgeClass,reloadMode) {
             <label for="zoneType">Zone Type</label>
             ${selectHTML}
             <button class="change-type-btn" onclick="changeZoneType(${zone.zoneID},'${reloadMode}')">Change zone function</button>
+            <input type="number" name="courierID" id="courrierID" placeholder="Courier ID" min="0" max="100"/>
         </div>
     `;
 
@@ -109,8 +110,8 @@ async function rectangleCard(zone,badgeClass,reloadMode) {
     if (zone.zoneTypes.zoneTypeName.includes("DropZone")){
         zoneCard.innerHTML += `<div class="zone-actions">
             ${zone.zoneAvailable 
-                ? `<button class="success-btn" onclick="enterZone(${zone.zoneID},'${reloadMode}')">Enter Zone</button>`
-                : `<button class="danger-btn" onclick="exitZone(${zone.zoneID},'${reloadMode}')">Exit Zone</button>`
+                ? `<button class="success-btn" onclick="enterZone(${zone.zoneID}, document.getElementById('courrierID').value, '${reloadMode}')">Enter Zone</button>`
+                : `<button class="danger-btn" onclick="exitZone(${zone.zoneID}, document.getElementById('courrierID').value, '${reloadMode}')">Exit Zone</button>`
             }
         </div>`
     }
@@ -163,7 +164,7 @@ async function changeZoneType(zoneID,reloadMode) {
 } 
 
 // Enter a zone (set as checked)
-async function enterZone(zoneID,reloadMode = "card" | "warehouse map") {
+async function enterZone(zoneID, courrierID, reloadMode = "card" | "warehouse map") {
     try {
         console.log(`Entering zone ${zoneID}`);
         
@@ -171,7 +172,8 @@ async function enterZone(zoneID,reloadMode = "card" | "warehouse map") {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({ courrierID })
         });
         
         if (!response.ok) {
