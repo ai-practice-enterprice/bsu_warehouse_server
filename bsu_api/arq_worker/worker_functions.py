@@ -213,6 +213,8 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
 
         try:
 
+            log.info(f"Payload received: {sample.payload.to_string()}")
+            
             notification = json.loads(sample.payload.to_string())
             # here we should handle the namespace so we know which robot sent the notification
             # sample.key_expr => full topic name e.g.: /jetank_1/to_server
