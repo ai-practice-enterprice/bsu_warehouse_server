@@ -1,0 +1,278 @@
+[ 0 ]: Class "mysqli" not found in file : /var/www/html/classes/Controller.php	 on line : 9	 at time : 2025-04-22 09:42:54 - 
+[ 0 ]: Class "mysqli" not found in file : /var/www/html/classes/Controller.php	 on line : 9	 at time : 2025-04-22 09:44:26 - 
+[ 0 ]: Class "mysqli" not found in file : /var/www/html/classes/Controller.php	 on line : 9	 at time : 2025-04-22 10:37:14 - 
+[ 0 ]: Class "mysqli" not found in file : /var/www/html/classes/Controller.php	 on line : 9	 at time : 2025-04-22 10:38:23 - 
+[ 1045 ]: Access denied for user 'Webuser'@'172.18.0.3' (using password: YES) in file : /var/www/html/classes/Controller.php	 on line : 9	 at time : 2025-04-23 16:22:04 - 
+[ 1045 ]: Access denied for user 'Webuser'@'172.18.0.3' (using password: YES) in file : /var/www/html/classes/Controller.php	 on line : 9	 at time : 2025-04-23 16:27:08 - 
+[ 1045 ]: Access denied for user 'webuser'@'172.18.0.3' (using password: YES) in file : /var/www/html/classes/Controller.php	 on line : 9	 at time : 2025-04-23 16:33:07 - 
+[ 1045 ]: Access denied for user 'webuser'@'172.18.0.5' (using password: YES) in file : /var/www/html/classes/Controller.php	 on line : 9	 at time : 2025-04-23 16:34:49 - 
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 151
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 224
+[ 2 ]: Undefined array key "form" in file /var/www/html/classes/Controller.php on line 224
+[ 0 ]: Class "QueryConstructor" not found in file : /var/www/html/classes/Controller.php	 on line : 230	 at time : 2025-04-24 06:06:09 - 
+[ 0 ]: Class "QueryConstructor" not found in file : /var/www/html/classes/Controller.php	 on line : 230	 at time : 2025-04-24 06:07:26 - 
+[ 2 ]: require_once(../bsu/login.php): Failed to open stream: No such file or directory in file /var/www/html/classes/Controller.php on line 114
+[ 0 ]: Class "Controller" not found in file : /var/www/html/classes/Initialiser.php	 on line : 42	 at time : 2025-04-24 07:32:13 - 
+[ 1146 ]: Table 'bsu_warehouse_db.users' doesn't exist in file : /var/www/html/classes/Controller.php	 on line : 209	 at time : 2025-04-24 07:34:08 - 
+[ 1146 ]: Table 'bsu_warehouse_db.Users' doesn't exist in file : /var/www/html/classes/Controller.php	 on line : 209	 at time : 2025-04-24 07:34:48 - 
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 221
+[ 0 ]: Navigation::__toString(): Return value must be of type string, none returned in file : /var/www/html/classes/Navigation.php	 on line : 25	 at time : 2025-04-24 08:02:06 - 
+[ 0 ]: Navigation::__toString(): Return value must be of type string, none returned in file : /var/www/html/classes/Navigation.php	 on line : 25	 at time : 2025-04-24 08:02:11 - 
+[ 2 ]: Undefined array key "navigate_to" in file /var/www/html/classes/Controller.php on line 105
+[ 2 ]: Undefined array key "navigate_to" in file /var/www/html/classes/Controller.php on line 105
+[ 2 ]: Undefined array key "navigate_to" in file /var/www/html/classes/Controller.php on line 105
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 243
+[ 0 ]: Object of class mysqli_result could not be converted to string in file : /var/www/html/classes/LogHandler.php	 on line : 97	 at time : 2025-04-24 09:54:31 - 
+[ 0 ]: Object of class mysqli_result could not be converted to string in file : /var/www/html/classes/LogHandler.php	 on line : 97	 at time : 2025-04-24 09:55:03 - 
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 247
+[ 2 ]: Array to string conversion in file /var/www/html/classes/LogHandler.php on line 97
+[ 2 ]: Array to string conversion in file /var/www/html/classes/LogHandler.php on line 97
+[ 2 ]: require_once(./forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(./forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(./forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/occupancy.php on line 3
+[ 2 ]: require_once(./forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(./forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(./forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(./forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(./forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(./forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(./forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(./forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(../forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(../forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/robots.php on line 3
+[ 2 ]: require_once(../forbidden_pages.php): Failed to open stream: No such file or directory in file /var/www/html/bsu/occupancy.php on line 9
+[ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 250
+[ 2 ]: require_once(../public/error.php): Failed to open stream: No such file or directory in file /var/www/html/classes/Controller.php on line 143
+[ 2 ]: require_once(../public/error.php): Failed to open stream: No such file or directory in file /var/www/html/classes/Controller.php on line 143

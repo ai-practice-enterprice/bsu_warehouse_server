@@ -1,0 +1,42 @@
+#mailbox-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.notification-card {
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.notification-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.notification-title {
+    font-weight: bold;
+}
+
+.notification-content {
+    white-space: pre-wrap;
+    background-color: #f8f9fa;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0;
+    overflow-x: auto;
+}
+
+.new-notification {
+    border-left: 4px solid #007bff;
+    animation: highlight 3s ease;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: rgba(0, 123, 255, 0.1);
+    }
+    100% {
+        background-color: transparent;
+    }
+}

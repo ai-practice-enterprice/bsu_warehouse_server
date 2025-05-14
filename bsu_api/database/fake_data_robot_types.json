@@ -1,0 +1,14 @@
+[
+    {
+        "robotTypeID": 1,
+        "robotTypeName": "Jetank"
+    },
+    {
+        "robotTypeID": 2,
+        "robotTypeName": "Jetracer"
+    },
+    {
+        "robotTypeID": 3,
+        "robotTypeName": "Jetank_Hiwonder"
+    }
+]

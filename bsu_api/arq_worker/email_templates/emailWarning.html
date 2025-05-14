@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ subject }}</title>
+
+    {{ general_style }}
+
+    <style>
+        .header {
+            background-color: #c0392b;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content h2 {
+            color: #c0392b;
+        }
+
+        .status,
+        .message {
+            background-color: #ffeaea;
+            border-left: 4px solid #c0392b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            color: #c0392b;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        
+        <div class="header">
+            <h1>⚠️ {{ header_title }}</h1>
+        </div>
+
+        <div class="content">
+            <h2>Warning: Robot "{{ robot_namespace }}"</h2>
+            <p>This is an important warning from your ROS2 robot monitoring system:</p>
+            
+            <div class="status">
+                Status: <span>{{ status }}</span><br>
+            </div>
+
+            <div class="message">
+                <p>{{ message }}</p>
+            </div>
+
+            <p>Please address this issue as soon as possible.</p>
+        </div>
+        
+        <div class="departement-message">
+        <div class="departement-logo">
+            <img src="https://media-hosting.imagekit.io/af87e0ce2a41408d/bsu_ai_dep.svg?Expires=1841736323&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=VVdVOlZWA9k~RTI15Y7nHHcD~NzBocA-XdAR9xXy4gpoII-56hf~cYdMElA7vbhzZ6M1bA3LyhcWx4j4PueaAHgbkjnfpW2MZtJHAK-hyLAvqrLq7L4w6FaInLbjkj7QbjjVeOvgEDCrx~83PhIZwNdIeKkvtrV5-MyCHSD9IGxtwRfRhtwGkMOhaEZLB17f8CR3JXLNCEmM-FTX9e6gfwjfT0hpJLep9R9J4zNf3hU3xkCw~FF9uW68sGKCuckdJrEuiIKfYFxm230v5xz0ajR9xtb4whkPP0nBuMwp6A0nyUVmRDX3TP3ulojImhl7uWcUbUcwRAnS5CK~ODBfkQ__" alt="logo_dep">
+        </div>
+        Thank you for using the ROS2 Monitoring Service
+        </div>
+
+        <div class="footer">
+            &copy; {{ year }} BSU | ROS2 Monitoring System
+        </div>
+    
+    </div>
+</body>
+
+</html>

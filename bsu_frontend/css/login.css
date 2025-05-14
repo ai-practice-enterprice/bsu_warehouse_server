@@ -1,0 +1,13 @@
+@font-face {
+    font-family: custom-font-main-title;
+    src: url(../assets/fonts/Nasalization_Rg.otf);
+}
+
+.icon-container {
+    width: 25%;
+    height: 25%;
+}
+
+#main-title {
+    font-family: custom-font-main-title;
+}

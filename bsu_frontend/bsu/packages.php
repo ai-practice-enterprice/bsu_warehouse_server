@@ -1,0 +1,45 @@
+<?php
+    if (!defined("APP_STARTED")) {
+        header("Location: ../bsu.php");
+    }
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package data</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/bsu_general_style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/svg/bsu_ai_icon.svg">
+</head>
+<body>
+    <?php  Navigation::write_navigation("Packages Management"); ?>
+
+
+    <div class="tabs" id="tabs-nav">
+        <div class="tab active" data-tab-id="tab-1">Intake</div>
+        <div class="tab" data-tab-id="tab-2">Storage</div>
+    </div>
+
+    <div class="tabs" id="tabs-chart-nav">
+        <div class="tab active" data-mode="line chart">line chart</div>
+        <div class="tab" data-mode="calendar">Calendar</div>
+    </div>
+
+    <div class="card">
+        <div class="card" id="calendar-options">
+            <label for="domainSlider">6</label>
+            <input type="range" id="domainSlider" min="0" max="100" value="6" step="1">
+        </div>
+        <div class="card" id="data-holder">
+            <!-- Will be populated with the API -->
+        </div>
+    </div>
+
+    <script src="../javascript/general_config.js"></script>
+    <script src="../javascript/libraries/d3.js"></script>
+    <script src="../javascript/libraries/plot.js"></script>
+    <script src="../javascript/page_specific/packages.js"></script>
+</body>
+</html>
