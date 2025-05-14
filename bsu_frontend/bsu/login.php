@@ -28,7 +28,7 @@
             <label for="input-username">Username</label>
             <input type="text" id="input-username" name="loginForm[userName]">
             <label for="input-userpassword">Password</label>
-            <input type="text" id="input-userpassword" name="loginForm[userPassword]">
+            <input type="password" id="input-userpassword" name="loginForm[userPassword]">
             <input type="submit" value="Login" name="form" data-inputID="login" class="primary-btn">
         </form>
     </div>
