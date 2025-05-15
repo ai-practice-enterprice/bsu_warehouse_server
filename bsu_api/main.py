@@ -56,7 +56,7 @@ async def lifespan(_) -> AsyncIterator[None]:
     fake_date_gen = FakeDataGenerator(
         push_packages = False,
         push_zones = True,
-        push_robots = True,
+        push_robots = False,
         push_paths = False,
         push_users = True, 
         write_to_file = False,
