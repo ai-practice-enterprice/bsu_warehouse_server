@@ -201,6 +201,9 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
 
 
 # !!!!! This classes should match the ROS2 messages send by the robots
+@cdr
+class String:
+    data: str
 
 
 def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
@@ -211,28 +214,30 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
     # ---------------------------------------------------- #
     def callback(sample: zenoh.Sample):
 
-        log.info(f"Payload received: {sample.payload.to_string()}")
-        try:
+        # https://zenoh.io/blog/2021-04-28-ros2-integration/
+        notification: String =  String.deserialize(sample.payload.to_bytes())
 
-            
-            notification = json.loads(sample.payload)
-            # here we should handle the namespace so we know which robot sent the notification
+        log.info(f"Payload received: {notification.data.strip("~")}")
+        
+        try:
+            message = json.loads(notification.data.strip("~"))
+            # here we should handle the namespace so we know which robot sent the message
             # sample.key_expr => full topic name e.g.: /jetank_1/to_server
             log.info(
                 f"""
-                \nReceived notification from robot: {sample.key_expr}
+                \nReceived message from robot: {sample.key_expr}
                 \nFull Message: 
-                \n\t robot namespace : {notification["robot_namespace"]}
-                \n\t message type    : {notification["message_type"].upper()}
-                \n\t robot message   : {notification["robot_message"]}
+                \n\t robot namespace : {message["robot_namespace"]}
+                \n\t message type    : {message["message_type"].upper()}
+                \n\t robot message   : {message["robot_message"]}
                 """
             )
 
             email_type = EmailType.INFO
-            if notification["message_type"].upper() == "INFO": email_type = EmailType.INFO
-            elif notification["message_type"].upper() == "WARNING": email_type = EmailType.WARNING
-            elif notification["message_type"].upper() == "REQUEST": email_type = EmailType.REQUEST
-            elif notification["message_type"].upper() == "CONFIRMATION": email_type = EmailType.CONFIRMATION
+            if message["message_type"].upper() == "INFO": email_type = EmailType.INFO
+            elif message["message_type"].upper() == "WARNING": email_type = EmailType.WARNING
+            elif message["message_type"].upper() == "REQUEST": email_type = EmailType.REQUEST
+            elif message["message_type"].upper() == "CONFIRMATION": email_type = EmailType.CONFIRMATION
             else: email_type = EmailType.INFO
             log.info(f"\nEmail type: {email_type}\n")
 
@@ -250,8 +255,8 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
                     "destination"   : destination,
                     "subject"       : "test-api",
                     "content"       : builder.render(
-                        robot_namespace = notification.robot_namespace,
-                        robot_message = notification.robot_message,
+                        robot_namespace = message["robot_namespace"],
+                        robot_message = message["robot_message"],
                     ),
                 }
 
