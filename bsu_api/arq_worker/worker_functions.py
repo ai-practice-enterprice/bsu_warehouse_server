@@ -255,8 +255,8 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
                     "destination"   : destination,
                     "subject"       : "test-api",
                     "content"       : builder.render(
-                        robot_namespace = message.robot_namespace,
-                        robot_message = message.robot_message,
+                        robot_namespace = message["robot_namespace"],
+                        robot_message = message["robot_message"],
                     ),
                 }
 
