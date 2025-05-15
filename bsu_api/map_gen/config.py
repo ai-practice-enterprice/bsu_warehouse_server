@@ -62,12 +62,10 @@ ZONE_TYPE_FOR_ROBOTS_DESC = {
 }
 
 MAP = [
-    [ZONE_OUT,      NORMAL,        VOID,          VOID,             ERROR_ZONE, ERROR_ZONE, ERROR_ZONE, ERROR_ZONE, ROBOT_STATION, ROBOT_STATION, ROBOT_STATION, VOID],
-    [VOID,          NORMAL,        NORMAL,        NORMAL,           STORAGE,    STORAGE,    STORAGE,    STORAGE,    VOID,          NORMAL,        NORMAL,        ZONE_IN],
-    [ZONE_OUT,      NORMAL,        VOID,          VOID,             STORAGE,    STORAGE,    STORAGE,    STORAGE,    NORMAL,        NORMAL,        NORMAL,        VOID],
-    [VOID,          NORMAL,        NORMAL,        NORMAL,           STORAGE,    STORAGE,    STORAGE,    STORAGE,    VOID,          VOID,          NORMAL,        ZONE_IN],
-    [ZONE_OUT,      NORMAL,        NORMAL,        VOID,             STORAGE,    STORAGE,    STORAGE,    STORAGE,    NORMAL,        NORMAL,        NORMAL,        VOID],
-    [VOID,          ROBOT_STATION, ROBOT_STATION, ROBOT_STATION,    STORAGE,    STORAGE,    STORAGE,    STORAGE,    VOID,          VOID,          NORMAL,        ZONE_IN],
+    [ERROR_ZONE, ERROR_ZONE,  ROBOT_STATION, VOID],
+    [STORAGE,    STORAGE,     NORMAL,        ZONE_IN],
+    [STORAGE,    STORAGE,     NORMAL,        VOID],
+    [STORAGE,    STORAGE,     NORMAL,        ZONE_IN],
 ]
 
 # ROBOT RELATED ===================================================================================
