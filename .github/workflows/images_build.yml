@@ -35,8 +35,8 @@ jobs:
           docker tag bsu-api ${{ secrets.DOCKER_USERNAME }}/bsu-warehouse:api-latest
           docker push ${{ secrets.DOCKER_USERNAME }}/bsu-warehouse:api-latest
           # docker github container
-          docker tag bsu-api ghcr.io/ai-practice-enterprice/bsu-warehouse:api-latest
-          docker push ghcr.io/ai-practice-enterprice/bsu-warehouse:api-latest
+          docker tag bsu-api ghcr.io/${{ github.repository_owner }}/bsu-warehouse:api-latest
+          docker push ghcr.io/${{ github.repository_owner }}/bsu-warehouse:api-latest
 
       - name: Build and push Frontend image
         run: |
@@ -45,5 +45,5 @@ jobs:
           docker tag bsu-frontend ${{ secrets.DOCKER_USERNAME }}/bsu-warehouse:frontend-latest
           docker push ${{ secrets.DOCKER_USERNAME }}/bsu-warehouse:frontend-latest
           # docker github container
-          docker tag bsu-frontend ghcr.io/ai-practice-enterprice/bsu-warehouse:frontend-latest
-          docker push ghcr.io/ai-practice-enterprice/bsu-warehouse:frontend-latest
+          docker tag bsu-frontend ghcr.io/${{ github.repository_owner }}/bsu-warehouse:frontend-latest
+          docker push ghcr.io/${{ github.repository_owner }}/bsu-warehouse:frontend-latest
