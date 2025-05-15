@@ -63,8 +63,6 @@ services:
     image: sterren642/bsu-warehouse:api-latest
     container_name: bsu-api-server
     restart: unless-stopped
-    volumes:
-      - ./bsu_api:/app
     expose:
       - 8000
     ports:
