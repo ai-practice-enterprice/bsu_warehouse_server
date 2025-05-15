@@ -57,9 +57,9 @@ async def lifespan(_) -> AsyncIterator[None]:
         push_packages = False,
         push_zones = True,
         push_robots = True,
-        push_paths = True,
+        push_paths = False,
         push_users = True, 
-        write_to_file = True,
+        write_to_file = False,
         read_from_file = False,
         file_type = "csv",
         additional_configuration = {
