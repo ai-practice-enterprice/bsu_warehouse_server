@@ -5,7 +5,7 @@ from fastapi.responses import StreamingResponse
 from typing import Annotated
 
 
-router = APIRouter(prefix="/notification", tags=["Fake Data"])
+router = APIRouter(prefix="/notification", tags=["Notification"])
 clients_lock = asyncio.Lock()
 clients: dict[str, asyncio.Queue] = {}
 
