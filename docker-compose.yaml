@@ -60,7 +60,8 @@ services:
   # while this feature is good in developement to test out your API endpoints with a other service without having to reset your docker containers each time, it is NOT a good thing
   # in production.
   bsu-api-server:
-    image: sterren642/bsu-warehouse:api-latest
+    #image: sterren642/bsu-warehouse:api-latest
+    image: ghcr.io/ai-practice-enterprice/bsu-warehouse:api-latest
     container_name: bsu-api-server
     restart: unless-stopped
     expose:
@@ -76,7 +77,8 @@ services:
   # we map a volume from our folder ./bsu_frontend to the /var/www/html folder because apache expects it to be there
   # see the docs
   bsu-website:
-    image: sterren642/bsu-warehouse:frontend-latest
+    #image: sterren642/bsu-warehouse:frontend-latest
+    image: ghcr.io/ai-practice-enterprice/bsu-warehouse:frontend-latest
     container_name: bsu-website
     restart: unless-stopped
     volumes:
