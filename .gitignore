@@ -1,5 +1,5 @@
 celerybeat*
-bsu_redis/*
+bsu_redis/*.rdb
 *.log*
 
 
