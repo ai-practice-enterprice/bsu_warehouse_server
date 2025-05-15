@@ -263,7 +263,11 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
                     log.info(f"{response.json()}")
 
         except requests.exceptions.RequestException as e:
-            log.warning(f"An error occurred: {e}")
+            log.warning(f"An error occurred during the request: {e}")
+        except json.JSONDecodeError as e:
+            log.warning(f"Failed to parse JSON payload: {e}")
+        except Exception as e:
+            log.warning(f"unkonw error occured {e}")
     # ---------------------------------------------------- #
     
 
