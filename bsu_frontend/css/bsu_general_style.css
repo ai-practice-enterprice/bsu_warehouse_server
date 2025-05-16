@@ -754,3 +754,124 @@ dialog {
     transition: opacity 0.3s ease, transform 0.3s ease;
     animation: slide-in 0.4s ease forwards;
 }
+
+
+.notification-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    background-color: #ffffff;
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.notification-header h1 {
+    border: none;
+    margin: 0;
+    padding: 0px;
+    font-size: 24px;
+    color: white;
+    text-align: center;
+}
+
+.notification-departement-message {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+    font-size: 12px;
+    color: #888;
+    padding: 10px;
+
+    text-align: center;
+}
+
+.notification-departement-logo img{
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notification-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px;
+    color: #333333;
+
+    & h2 {
+        font-size: 12px; 
+    }
+
+    & .notification-status ,
+    & .notification-message {
+        padding: 3px;
+        margin: 0;
+        border-radius: 5px;
+        font-family: monospace;
+        max-height: fit-content;
+        font-size: medium;
+    }
+
+    & p {
+        text-align: center;
+    }
+}
+
+.notification-footer {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    padding: 20px;
+}
+
+.notification-header.confirmation {
+    background-color: #2ecc40;
+}
+
+
+.notification-content.confirmation h2 {
+    color: #2ecc40;
+}
+
+.notification-status.confirmation,
+.notification-message.confirmation {
+    background-color: #e8f8ec;
+    border-left: 4px solid #2ecc40;
+    color: #218c3a;
+}
+
+.notification-header.info {
+    background-color: #005dab;
+}
+
+.notification-content.info h2 {
+    color: #005dab;
+}
+
+.notification-status.info,
+.notification-message.info {
+    background-color: #e6f4ff;
+    border-left: 4px solid #005dab;
+}
+
+.notification-header.warning {
+    background-color: #c0392b;
+}
+
+.notification-content.warning h2 {
+    color: #c0392b;
+}
+
+.notification-status.warning,
+.notification-message.warning {
+    background-color: #ffeaea;
+    border-left: 4px solid #c0392b;
+    color: #c0392b;
+    font-weight: bold;
+}

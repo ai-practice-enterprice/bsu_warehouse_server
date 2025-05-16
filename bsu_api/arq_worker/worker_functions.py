@@ -11,15 +11,21 @@ from logging import Logger
 from prisma.models import Robots, Zones , PackageMovement, OrderMovement
 from arq import ArqRedis
 from arq.worker import Retry
-from .emailTemplates import JinjaEmailTemplateBuilder , EmailType
+from .emailTemplates import JinjaEmailTemplateBuilder , MessageType
 from pycdr import cdr
+
+# !!!!! This classes should match the ROS2 messages send by the robots
+@cdr
+class String:
+    data: str
+
 
 # https://arq-docs.helpmanual.io/#retrying-jobs-and-cancellation
 # create the taskqueue functions ===========================================================
 async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coords: tuple[int, int]):
     log: Logger = ctx["logger"]
     zenoh_pub: zenoh.Publisher = ctx["zenoh_pub"]
-    log.info(f"Attempting to clear package {package_id} from zone {zone_id}...")
+    log.info(f"\t ARQ : Attempting to clear package {package_id} from zone {zone_id}...")
 
     # 1) Find an available robot or retry if no robot available
     try:
@@ -28,7 +34,7 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
                 {"robotStatus" : True}, {"robotAvailable" : True}
             ]}
         )
-        log.info(f"ARQ : Found {len(robots)} free robots.")
+        log.info(f"\t ARQ : Found {len(robots)} free robots.")
 
         # 1.2) Exception handling if no robot available => retry == max_retries
         if len(robots) == 0:
@@ -92,7 +98,7 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
         
         # If we have robots available, randomly select one
         r1 = random.choice(robots)
-        log.info(f"Choose robot {r1.robotNamespace} to clear package {package_id}...")
+        log.info(f"\t ARQ : Choose robot {r1.robotNamespace} to clear package {package_id}...")
         
         # 2) With the robot selected, mark it as unavailable
         updated_robot = await Robots.prisma().update_many(
@@ -100,9 +106,9 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
             data={"robotAvailable": False}
         )
         if updated_robot == 0:
-            log.error(f"Failed to mark robot {r1.robotNamespace} as unavailable")
+            log.error(f"\t ARQ : Failed to mark robot {r1.robotNamespace} as unavailable")
             raise Retry(defer=5)
-        log.info(f"Robot {r1.robotNamespace} marked as unavailable")
+        log.info(f"\t ARQ : Robot {r1.robotNamespace} marked as unavailable")
         
         # 2.1) Create an OrderMovement entry to track this task
         try:
@@ -114,9 +120,9 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
                     "status": "processing"
                 }
             )
-            log.info(f"Created order {order.OrderID} for package {package_id} with robot {r1.robotNamespace}")
+            log.info(f"\t ARQ : Created order {order.OrderID} for package {package_id} with robot {r1.robotNamespace}")
         except Exception as e:
-            log.error(f"Failed to create order movement: {str(e)}")
+            log.error(f"\t ARQ : Failed to create order movement: {str(e)}")
             # Revert robot availability since we failed to create the order
             await Robots.prisma().update(
                 where={"robotID": r1.robotID},
@@ -126,10 +132,17 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
         
         # 3) Send Zenoh pub to tell robot to move
         try:
-            payload = json.dumps({"robot_namespace": r1.robotNamespace, "package_id": package_id, "x": coords[0], "y": coords[1]})
+            payload = String(
+                json.dumps({
+                    "robot_namespace": "/" + r1.robotNamespace, 
+                    "package_id": package_id, 
+                    "x": coords[0], 
+                    "y": coords[1]
+                })
+            ).serialize()
             await asyncio.to_thread(zenoh_pub.put, payload)
         except Exception as e:
-            log.error(f"Error sending request to RosApiBridge: {str(e)}")
+            log.error(f"\t ARQ : Error sending request to robot: {str(e)}")
             # Revert robot availability
             await Robots.prisma().update(
                 where={"robotID": r1.robotID},
@@ -143,7 +156,7 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
             return "error sending request to robot"
         
     except Exception as e:
-        log.error(f"Error processing order: {str(e)}")
+        log.error(f"\t ARQ : Error processing order: {str(e)}")
         return f"error processing order: {str(e)}"
 
 
@@ -156,7 +169,7 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
     arq_redis: ArqRedis = ctx["arq_redis"]
 
     try:
-        log.info("ARQ : Checking for packages to move")
+        log.info("\t ARQ : Checking for packages to move")
         # Find packages in DropZoneIn zones that don't already have an active order
         new_orders = await PackageMovement.prisma().find_many(
             where={
@@ -176,7 +189,7 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
             }
         )
         
-        log.info(f"ARQ : Found {len(new_orders)} new orders.")
+        log.info(f"\t ARQ : Found {len(new_orders)} new orders.")
         for pm in new_orders:
             # Check if there's already an active order for this package
             existing_orders = await OrderMovement.prisma().count(
@@ -194,22 +207,55 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
                     coords=(pm.zones.zoneX, pm.zones.zoneY)
                 )
     except Exception as e:
-        log.exception(f"ARQ : Error checking for new orders: {e}")
+        log.exception(f"\t ARQ : Error checking for new orders: {e}")
 
 # create the taskqueue functions ===========================================================
 
-
-
-# !!!!! This classes should match the ROS2 messages send by the robots
-@cdr
-class String:
-    data: str
 
 
 def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
     """
     This function handles the notification from the robot
     """
+    def send_email(builder: JinjaEmailTemplateBuilder, message: dict): 
+        builder.build_email(
+            robot_namespace = message["robot_namespace"],
+            robot_message = message["robot_message"]
+        )
+
+        url = 'http://192.168.1.20:8000/sendmailhtml'
+        # url = 'http://192.168.1.20:8000/sendmail'
+        headers = {
+            'Content-Type': 'application/json',
+        }
+
+        # "SSS@blueskyunlimited.org","AD@blueskyunlimited.org"
+        # sends a email to the mail server
+        for destination in ["AI@blueskyunlimited.org"]: 
+            data = {
+                "token"         : "knhqwYD2gwJm2zEmXgbrDh",
+                "destination"   : destination,
+                "subject"       : "test-api",
+                "content"       : builder.render(),
+            }
+
+            json_data = json.dumps(data)
+            response = requests.post(url, data=json_data,headers=headers)
+
+            log.info(f"{response.status_code}")
+            if response.status_code != 200:
+                log.info(f"{response.json()}")
+
+    def send_notification(builder: JinjaEmailTemplateBuilder, message: dict):
+        # sends a notification to the frontend
+        builder.build_frontend_notification(
+            robot_namespace = message["robot_namespace"],
+            robot_message = message["robot_message"]
+        )
+        requests.post(
+            url="http://localhost:8000/notification/all",
+            json={"message": builder.render()}
+        )
 
     # ---------------------------------------------------- #
     def callback(sample: zenoh.Sample):
@@ -217,7 +263,7 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
         # https://zenoh.io/blog/2021-04-28-ros2-integration/
         notification: String =  String.deserialize(sample.payload.to_bytes())
 
-        log.info(f"Payload received: {notification.data.strip("~")}")
+        log.info(f"\t ARQ : Payload received: {notification.data.strip("~")}")
         
         try:
             message = json.loads(notification.data.strip("~"))
@@ -225,6 +271,7 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
             # sample.key_expr => full topic name e.g.: /jetank_1/to_server
             log.info(
                 f"""
+                \t ARQ :
                 \nReceived message from robot: {sample.key_expr}
                 \nFull Message: 
                 \n\t robot namespace : {message["robot_namespace"]}
@@ -233,46 +280,25 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
                 """
             )
 
-            email_type = EmailType.INFO
-            if message["message_type"].upper() == "INFO": email_type = EmailType.INFO
-            elif message["message_type"].upper() == "WARNING": email_type = EmailType.WARNING
-            elif message["message_type"].upper() == "REQUEST": email_type = EmailType.REQUEST
-            elif message["message_type"].upper() == "CONFIRMATION": email_type = EmailType.CONFIRMATION
-            else: email_type = EmailType.INFO
-            log.info(f"\nEmail type: {email_type}\n")
+            message_type = MessageType.INFO
+            if message["message_type"].upper() == "INFO": message_type = MessageType.INFO
+            elif message["message_type"].upper() == "WARNING": message_type = MessageType.WARNING
+            elif message["message_type"].upper() == "REQUEST": message_type = MessageType.REQUEST
+            elif message["message_type"].upper() == "CONFIRMATION": message_type = MessageType.CONFIRMATION
+            else: message_type = MessageType.INFO
+            log.info(f"\n\t ARQ : Message type: {message_type}\n")
 
-            builder = JinjaEmailTemplateBuilder(email_type)
-            url = 'http://192.168.1.20:8000/sendmailhtml'
-            # url = 'http://192.168.1.20:8000/sendmail'
-            headers = {
-                'Content-Type': 'application/json',
-            }
+            builder = JinjaEmailTemplateBuilder(message_type)
 
-            # "SSS@blueskyunlimited.org","AD@blueskyunlimited.org"
-            for destination in ["AI@blueskyunlimited.org"]: 
-                data = {
-                    "token"         : "knhqwYD2gwJm2zEmXgbrDh",
-                    "destination"   : destination,
-                    "subject"       : "test-api",
-                    "content"       : builder.render(
-                        robot_namespace = message["robot_namespace"],
-                        robot_message = message["robot_message"],
-                    ),
-                }
-
-                json_data = json.dumps(data)
-                response = requests.post(url, data=json_data,headers=headers)
-
-                log.info(f"{response.status_code}")
-                if response.status_code != 200:
-                    log.info(f"{response.json()}")
+            send_email(builder,message)
+            send_notification(builder,message)
 
         except requests.exceptions.RequestException as e:
-            log.warning(f"An error occurred during the request: {e}")
+            log.warning(f"\t ARQ : An error occurred during the request: {e}")
         except json.JSONDecodeError as e:
-            log.warning(f"Failed to parse JSON payload: {e}")
+            log.warning(f"\t ARQ : Failed to parse JSON payload: {e}")
         except Exception as e:
-            log.warning(f"unkonw error occured {e}")
+            log.warning(f"\t ARQ : Unknown error occured {e}")
     # ---------------------------------------------------- #
     
 
