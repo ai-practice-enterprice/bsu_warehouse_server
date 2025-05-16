@@ -40,8 +40,7 @@ function loadSavedNotifications() {
             mailboxContainer.removeChild(waitingMessage);
         }
 
-        // Display notifications from newest to oldest
-        savedNotifications.reverse().forEach(notification => {
+        savedNotifications.forEach(notification => {
             displayNotification(notification.content, notification.timestamp, false);
         });
     }

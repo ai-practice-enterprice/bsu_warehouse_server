@@ -79,6 +79,7 @@ class FakeDataGenerator():
         push_packages: bool = True,
         push_zones: bool = True,
         push_robots: bool = True,
+        push_robot_types: bool = True,
         push_paths: bool = True,
         push_users: bool = True,
         write_to_file: bool = True,
@@ -116,6 +117,7 @@ class FakeDataGenerator():
         self.push_packages = push_packages
         self.push_zones = push_zones
         self.push_robots = push_robots
+        self.push_robot_types = push_robot_types
         self.push_paths = push_paths
         self.push_OM = False
         self.push_PM = False
@@ -251,6 +253,8 @@ class FakeDataGenerator():
                 await self.push_fake_zones_to_db()
             if self.push_robots:
                 await self.push_fake_robots_to_db()
+            if self.push_robot_types:
+                await self.push_fake_robot_types_to_db()
             if self.push_packages:
                 await self.push_fake_packages_to_db()
             if self.push_PM:
@@ -459,10 +463,8 @@ class FakeDataGenerator():
 
         await self.add_data(zone_data,"zones")
         self.write_to_file(zone_data,"zones")
-       
-    async def push_fake_robots_to_db(self):
-        log.info(f"====== Pushing fake robots ======")
 
+    async def push_fake_robot_types_to_db(self):
         robot_data_types: list = []
         # ----------------- main loop ----------------- #
         for robot_type in ROBOT_TYPES:
@@ -474,6 +476,9 @@ class FakeDataGenerator():
             })
         await self.add_data(robot_data_types,"robot_types")
         self.write_to_file(robot_data_types,"robot_types")
+       
+    async def push_fake_robots_to_db(self):
+        log.info(f"====== Pushing fake robots ======")
 
         robot_data: list = []
         fake = Faker()

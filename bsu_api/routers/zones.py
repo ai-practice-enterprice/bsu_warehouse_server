@@ -20,35 +20,18 @@ router = APIRouter(prefix="/frontend", tags=["Frontend"])
 # THIS IS A TEMP FUNC SO CHANGES ARE ALLOWED TO INCREASE REALASTIC BEHAVIOUR (such as: DB conn failed , courrier missing , no data fetched , etc...)
 def fetch_fake_remote_packagedata_from_AD_team(courrier_id: int,courrier_max_id: int = 20):
 
-    # 1% chance of error
-    if random.randint(1,1000) == 1:
-        raise Exception("Could not connect...")
-
-    # courier does not exist
-    if courrier_id not in range(1,courrier_max_id + 1):
-        raise Exception("Courrier does not exist...")
-
-    # other errors that you might think of that could break our server
-    # ...
-    #  ...
-
-    data: list[dict] = []
+    fetched_data: list[dict] = []
     fake = Faker()
     for x in range(courrier_id*10,courrier_id*10 + 10):
-        data.append({
+        fetched_data.append({
             "packageID"    : x,
-            "courrierID"   : random.randint(1,courrier_max_id),
+            "courrierID"   : courrier_id,
             "streetName"   : fake.street_name(),
             "houseNumber"  : str(random.randint(1,300)),
             "cityName"     : fake.city(),
             "cityPostcode" : fake.postcode(),            
         }) 
 
-    fetched_data: list[dict] = []
-    for package in data:
-        if package["courrierID"] == courrier_id: 
-            fetched_data.append(package)
-    
     return fetched_data
 
 # ======================== models for API request (NOT for database => see schema.prisma) ======================== #
@@ -270,7 +253,10 @@ async def enter_zone(zone_id: int, courrier_id: Annotated[int, Body(embed=True, 
     # --- !!! NEEDS TO BE REPLACED WITH ACTUAL URL and COURRIER ID !!! --- #
 
     # 1) here we create the data (might not be necessary but we might also get back some fields that we don't require)
-    # that is tailored for our dataabase
+    # that is tailored for our database
+    zone_type_zone_in = await ZoneTypes.prisma().find_many(
+        where={"zoneTypeName" : "DropZoneIn"}
+    )
     insert_data_package = []
     insert_data_packageMov = []
     for package in packages_fetched:
@@ -285,19 +271,24 @@ async def enter_zone(zone_id: int, courrier_id: Annotated[int, Body(embed=True, 
         insert_data_packageMov.append({
             "ZoneID" : zone_id,
             "PackageID" : package["packageID"],
+            "zoneTypeID" : zone_type_zone_in[0].zoneTypeID,
         })
+
     try:
         # 2) here we add the packages to the DB
+        log.info(f"Inserting {len(insert_data_packageMov)} into packages")
         await Packages.prisma().create_many(
             data=insert_data_package
         )
         # 3) here we add the packages about WHERE they are inside the warehouse (hopefully) to the DB
+        log.info(f"Inserting {len(insert_data_packageMov)} into package movement")
         await PackageMovement.prisma().create_many(
             data=insert_data_packageMov
         )
     except Exception as e:
         log.exception(f"AI Server encountered some error when trying to insert the fetched data {e}")
         raise HTTPException(status_code=500, detail="AI Server encountered some error when trying to insert the fetched data")
+    
     try:
         # 4) here we update the zone
         await Zones.prisma().update(where={"zoneID": zone_id}, data={"zoneAvailable": False})
