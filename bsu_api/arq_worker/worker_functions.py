@@ -117,6 +117,7 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
                 data={
                     "RobotID": r1.robotID,
                     "ZoneID": zone_id,
+                    "PackageID": package_id,
                     "status": "processing"
                 }
             )
@@ -190,11 +191,11 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
         )
         
         log.info(f"\t ARQ : Found {len(new_orders)} new orders.")
+        # Check if there's already an active order for package
         for pm in new_orders:
-            # Check if there's already an active order for this package
             existing_orders = await OrderMovement.prisma().count(
                 where={
-                    "ZoneID": pm.ZoneID,
+                    "PackageID": pm.PackageID,
                     "status": {"in": ["pending", "processing"]}
                 }
             )
