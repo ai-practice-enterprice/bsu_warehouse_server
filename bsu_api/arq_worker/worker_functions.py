@@ -291,7 +291,11 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
             builder = JinjaEmailTemplateBuilder(message_type)
 
             send_email(builder,message)
-            send_notification(builder,message)
+            send_notification(builder, message)
+
+            if message["message_type"].upper() == "DONE":
+                package_id = message["package_id"]
+                requests.patch(url=f"http://localhost:8000/frontend/robot/{message["robot_namespace"]}/toggle")
 
         except requests.exceptions.RequestException as e:
             log.warning(f"\t ARQ : An error occurred during the request: {e}")
