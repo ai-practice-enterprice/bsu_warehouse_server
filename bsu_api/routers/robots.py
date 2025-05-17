@@ -48,6 +48,7 @@ async def read_robots():
     robots = await Robots.prisma().find_many(include={"robotTypes":True})
     return robots
 
+
 @router.get("/robot/type/all")
 async def read_robot_types():
     """
@@ -55,6 +56,7 @@ async def read_robot_types():
     """
     robot_types = await RobotTypes.prisma().find_many()
     return robot_types
+
 
 @router.patch("/robot/{robot_id}/toggle")
 async def update_robot(robot_id: int):
@@ -71,6 +73,28 @@ async def update_robot(robot_id: int):
         where={"robotID": robot_id}, 
         data={"robotStatus": new_status},
         include={"robotTypes":True}
+    )
+
+    return updated_robot
+
+
+@router.patch("/robot/{namespace}/toggle")
+async def update_robot_by_namespace(namespace: str, robot: RobotCreationRequest):
+    """
+    Update a robot by its namespace
+    """
+    log.info(f"Updating robot: {namespace}")
+
+    robot_id = await Robots.prisma().find_first(where={"robotNamespace": namespace})
+
+    if not robot_id:
+        raise HTTPException(status_code=404, detail="Robot not found")
+
+    updated_robot = await Robots.prisma().update(
+        where={"robotID": robot_id.robotID},
+        data={
+            "robotAvailable": not robot.robot_status
+        }
     )
 
     return updated_robot

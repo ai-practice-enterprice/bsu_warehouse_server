@@ -35,6 +35,7 @@ async def startup(ctx: dict[str, Any]):
         "mode": "peer",
         "connect": {
             "endpoints": ["tcp/192.168.1.10:7447"]
+            # "endpoints": ["tcp/192.168.65.3:7447"]
         }
     })))
     ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("**/goal_position")
