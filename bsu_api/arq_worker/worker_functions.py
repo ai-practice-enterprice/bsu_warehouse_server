@@ -161,7 +161,34 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
         return f"error processing order: {str(e)}"
 
 
-async def check_for_package_to_move(ctx: dict[Any, Any]):
+## CRON TASKS ===========================================================
+
+async def notify_zone_map(ctx: dict):
+    """
+    Send the new zone map to the robots
+    """
+    log: Logger = ctx["logger"]
+    zenoh_pub_zone: zenoh.Publisher = ctx["zenoh_pub_zone"]
+    
+    log.info(f"\t ARQ : Trying to gather map from DB")
+    zones = await Zones.prisma().find_many(include={"zoneTypes":True})
+    zones_list = []
+    for zone in zones:
+        zones_list.append({
+            "coords": (zone.zoneX, zone.zoneY),
+            "zone_id": zone.zoneTypes.zoneTypeID,
+        })
+
+    data = String(json.dumps(zones_list)).serialize()
+    try:
+        await asyncio.to_thread(zenoh_pub_zone.put, data)
+        log.info(f"\t ARQ : Sending new zone map to robots")
+    except Exception as e:
+        log.error(f"\t ARQ : Error sending zone map to robots: {str(e)}")
+        return f"error sending zone map to robots: {str(e)}"
+
+
+async def check_for_package_to_move(ctx: dict):
     """
     This function is run every X seconds to add jobs to the ARQ (asych redis queue to add a delay)
     => want to change the "X" see the ArqWorker
@@ -211,7 +238,6 @@ async def check_for_package_to_move(ctx: dict[Any, Any]):
         log.exception(f"\t ARQ : Error checking for new orders: {e}")
 
 # create the taskqueue functions ===========================================================
-
 
 
 def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
@@ -294,9 +320,10 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
             send_email(builder,message)
             send_notification(builder, message)
 
-            if message["message_type"].upper() == "DONE":
+            if message["message_type"].upper() == "CONFIRMATION":
+                namespace = message["robot_namespace"][1:] if message["robot_namespace"][0] == "/" else message["robot_namespace"]
                 package_id = message["package_id"]
-                requests.patch(url=f"http://localhost:8000/frontend/robot/{message["robot_namespace"]}/toggle")
+                requests.patch(url=f"http://localhost:8000/frontend/robot/{namespace}/toggle")
 
         except requests.exceptions.RequestException as e:
             log.warning(f"\t ARQ : An error occurred during the request: {e}")
@@ -316,4 +343,3 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
             time.sleep(1)
         except:
             break
-
