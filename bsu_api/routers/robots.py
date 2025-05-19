@@ -1,7 +1,9 @@
+import asyncio
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from prisma.models import Robots, RobotTypes
 from utils.logger import setup_logger
+from arq_worker.ArqWorker import startup
 log = setup_logger(__name__)
 router = APIRouter(prefix="/frontend", tags=["Frontend"])
 
@@ -75,6 +77,26 @@ async def update_robot(robot_id: int):
         include={"robotTypes":True}
     )
 
+    return updated_robot
+
+
+@router.patch("/robot/{robot_id}/reset")
+async def reset_robot(robot_id: int):
+    """
+    Reset a robot to its initial state
+    """
+    robot = await Robots.prisma().find_unique(where={"robotID": robot_id})
+    if not robot:
+        raise HTTPException(status_code=404, detail="Robot not found")
+    
+    updated_robot = await Robots.prisma().update(
+        where={"robotID": robot_id},
+        data={"robotStatus": True, "robotAvailable": True},
+    )
+
+    await asyncio.to_thread(startup.ctx["zenoh_pub_robot_reset"].put(f"robot/{robot.robotNamespace}/reset", "True"))
+
+    log.info(f"Robot {robot_id} has been reset")
     return updated_robot
 
 
