@@ -169,6 +169,8 @@ async def notify_zone_map(ctx: dict):
     """
     log: Logger = ctx["logger"]
     zenoh_pub_zone: zenoh.Publisher = ctx["zenoh_pub_zone"]
+    
+    log.info(f"\t ARQ : Trying to gather map from DB")
     zones = await Zones.prisma().find_many(include={"zoneTypes":True})
     zones_list = []
     for zone in zones:
@@ -318,7 +320,7 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
             send_email(builder,message)
             send_notification(builder, message)
 
-            if message["message_type"].upper() == "DONE":
+            if message["message_type"].upper() == "CONFIRMATION":
                 namespace = message["robot_namespace"][1:] if message["robot_namespace"][0] == "/" else message["robot_namespace"]
                 package_id = message["package_id"]
                 requests.patch(url=f"http://localhost:8000/frontend/robot/{namespace}/toggle")
