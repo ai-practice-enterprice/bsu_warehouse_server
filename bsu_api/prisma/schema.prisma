@@ -92,22 +92,26 @@ model Packages {
   active       Boolean  @default(true)
 
   PackageMovement PackageMovement[]
+  OrderMovement   OrderMovement[]
 }
 
 model OrderMovement {
   OrderID    Int      @id @default(autoincrement())
   ZoneID     Int
   RobotID    Int
+  PackageID  Int
   PathID     Int?
   status     String   @default("pending")
   insertDate DateTime @default(now())
 
-  zones  Zones  @relation(fields: [ZoneID], references: [zoneID])
-  robots Robots @relation(fields: [RobotID], references: [robotID])
+  zones    Zones    @relation(fields: [ZoneID], references: [zoneID])
+  robots   Robots   @relation(fields: [RobotID], references: [robotID])
+  packages Packages @relation(fields: [PackageID], references: [packageID])
 
   @@index([ZoneID], name: "ZoneID")
   @@index([RobotID], name: "RobotID")
   @@index([PathID], name: "PathID")
+  @@index([PackageID], name: "PackageID")
 }
 
 model PackageMovement {
