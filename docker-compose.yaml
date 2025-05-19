@@ -53,8 +53,8 @@ services:
       timeout: 5s
       retries: 10
       interval: 5s
-    networks:
-      - web
+    # networks:
+    #   - web
 
   # the DATABASE_URL environment variable is set so that if required we can load it in using the os.getenv("...") python function
   # right now we have set it manually in the "./bsu_api/config.py" file.
@@ -75,8 +75,8 @@ services:
     depends_on:
       bsu-db-server:
         condition: service_healthy
-    networks:
-      - web
+    # networks:
+    #   - web
 
   # we map a volume from our folder ./bsu_frontend to the /var/www/html folder because apache expects it to be there
   # see the docs
@@ -91,8 +91,8 @@ services:
       - 80
     ports:
       - 8002:80
-    networks:
-      - web
+    # networks:
+    #   - web
 
   # https://geshan.com.np/blog/2022/01/redis-docker/
   # https://www.ibm.com/think/topics/redis
@@ -112,8 +112,8 @@ services:
       - REDIS_DATABASE=0
     volumes:
       - ./bsu_redis:/data
-    networks:
-      - web
+    # networks:
+    #   - web
 
   phpmyadmin:
     depends_on:
@@ -124,8 +124,8 @@ services:
     environment:
       PMA_HOST: bsu-db-server
       PMA_PORT: 3306
-    networks:
-      - web
+    # networks:
+    #   - web
 
-networks:
-  web:
+# networks:
+#   web:

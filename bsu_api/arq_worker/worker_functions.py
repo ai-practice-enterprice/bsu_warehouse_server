@@ -294,7 +294,7 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
             send_email(builder,message)
             send_notification(builder, message)
 
-            if message["message_type"].upper() == "DONE":
+            if message["message_type"].upper() == "CONFIRMATION":
                 package_id = message["package_id"]
                 requests.patch(url=f"http://localhost:8000/frontend/robot/{message["robot_namespace"]}/toggle")
 
