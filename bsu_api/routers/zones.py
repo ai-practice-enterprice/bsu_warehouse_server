@@ -132,12 +132,15 @@ async def create_zone(zone: ZoneCreationRequest):
     Create a new zone
     """
     log.info(f"Creating a new zone: {zone.zone_name} of type {zone.zone_type}")
+    zone_type_db = await ZoneTypes.prisma().find_first(where={"zoneTypeName": zone.zone_type})
+    if not zone_type_db:
+        raise HTTPException(status_code=404, detail="Zone type not found")
+
     await Zones.prisma().create({
         "zoneName": zone.zone_name,
-        "zoneType": zone.zone_type,
+        "zoneType": zone_type_db.zoneTypeID,
         "zoneDescription": zone.zone_description,
         "zoneAvailable": zone.zone_available,
-        "zoneCheck": zone.zone_check
     })
     return {"status": "success"}
 
@@ -215,10 +218,14 @@ async def change_zone_type(zone_id: int,new_zone_type: str):
         zone_desc = ""
 
     zone_name =  new_zone_type + " " +  str(zone_id)
-    await Zones.prisma().update(
+    new_zone = await Zones.prisma().update(
         where={"zoneID": zone_id}, 
         data={
-            "zoneType": zone_type.zoneTypeID,
+            "zoneTypes": {
+                "connect": {
+                    "zoneTypeID": zone_type.zoneTypeID
+                }
+            },
             "zoneDescription"   : zone_desc,                     
             "zoneName"          : zone_name,                            
         }

@@ -10,7 +10,7 @@ from arq import cron, create_pool, ArqRedis
 from prisma import Prisma 
 from typing import Any
 
-from .worker_functions import check_for_package_to_move, process_order, receive_robot_notification
+from .worker_functions import check_for_package_to_move, process_order, receive_robot_notification, notify_zone_map
 from config import ARQ_REDIS_SETTINGS
 from utils.logger import setup_logger
 
@@ -39,6 +39,7 @@ async def startup(ctx: dict[str, Any]):
         }
     })))
     ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("**/goal_position")
+    ctx["zenoh_pub_zone"] = ctx["zenoh"].declare_publisher("server/map")
     ctx["zenoh_rec_task"] = asyncio.create_task(asyncio.to_thread(receive_robot_notification, ctx["zenoh"], ctx["logger"]))
 
     # arq == asyn Redis queue 
@@ -126,5 +127,11 @@ class WorkerSettings:
            name="check packages to move regulary",
            second=20,
            max_tries=2
+        ),
+        cron(
+            coroutine=notify_zone_map,
+            name="notify zone map",
+            second=20,
+            max_tries=2
         )
     ]
