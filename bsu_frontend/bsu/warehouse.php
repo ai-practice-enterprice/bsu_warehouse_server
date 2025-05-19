@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="./css/bsu_general_style.css">
     <link rel="stylesheet" href="./css/warehouse.css">
     <link rel="stylesheet" href="css/occupancy.css">
+    <link rel="stylesheet" href="../css/theme.css">
     <link rel="icon" type="image/x-icon" href="./assets/svg/bsu_ai_icon.svg">
 </head>
 <body>
@@ -33,6 +34,7 @@
     </div>
 
     <script src="../javascript/general_config.js"></script>
+    <script src="../javascript/utils/themeToggle.js"></script>
     <script src="../javascript/libraries/d3.js"></script>
     <script src="../javascript/libraries/plot.js"></script>
     <script src="../javascript/utils/buildSelectZoneType.js"></script>

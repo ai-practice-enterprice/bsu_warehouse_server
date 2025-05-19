@@ -23,6 +23,7 @@ class Navigation {
                 <a href="./bsu.php?navigate_to=users">&Uopf; Users</a>
                 <a href="./bsu.php?navigate_to=mailbox">&Mopf; Mailbox</a>
                 <a href="./bsu.php?logout=true">&rarrhk; Logout</a>
+                <button id="theme-toggle" class="theme-toggle-btn"></button>
             </div>
         </div>
         <?php
@@ -30,7 +31,10 @@ class Navigation {
             ?>
             <div class="header" id="navigation-menu">
                 <h1><?php echo $title; ?></h1>
-                <a href="./bsu.php?logout=true">&rarrhk; Logout</a>
+                <div class="nav-links">
+                    <a href="./bsu.php?logout=true">&rarrhk; Logout</a>
+                    <button id="theme-toggle" class="theme-toggle-btn"></button>
+                </div>
             </div>
             <?php
         }
