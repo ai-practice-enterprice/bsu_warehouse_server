@@ -34,12 +34,12 @@ async def startup(ctx: dict[str, Any]):
     ctx["zenoh"] = zenoh.open(zenoh.Config.from_json5(json.dumps({
         "mode": "peer",
         "connect": {
-            "endpoints": ["tcp/192.168.1.10:7447"]
-            # "endpoints": ["tcp/192.168.65.3:7447"]
+            # "endpoints": ["tcp/192.168.1.10:7447"]
+            "endpoints": ["tcp/192.168.65.3:7447"]
         }
     })))
     ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("**/goal_position")
-    ctx["zenoh_pub_zone"] = ctx["zenoh"].declare_publisher("/server/map")
+    ctx["zenoh_pub_zone"] = ctx["zenoh"].declare_publisher("server/map")
     ctx["zenoh_rec_task"] = asyncio.create_task(asyncio.to_thread(receive_robot_notification, ctx["zenoh"], ctx["logger"]))
 
     # arq == asyn Redis queue 
