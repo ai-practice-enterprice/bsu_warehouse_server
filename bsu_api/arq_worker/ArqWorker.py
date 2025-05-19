@@ -39,6 +39,7 @@ async def startup(ctx: dict[str, Any]):
         }
     })))
     ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("**/goal_position")
+    ctx["zenoh_pub_robot_reset"] = ctx["zenoh"].declare_publisher("server/**/reset")
     ctx["zenoh_pub_zone"] = ctx["zenoh"].declare_publisher("server/map")
     ctx["zenoh_rec_task"] = asyncio.create_task(asyncio.to_thread(receive_robot_notification, ctx["zenoh"], ctx["logger"]))
 
@@ -47,6 +48,8 @@ async def startup(ctx: dict[str, Any]):
     ctx["arq_redis"] = await create_pool(ARQ_REDIS_SETTINGS)
 
     ctx["logger"].info("------------ Worker start up complete ------------")
+
+    startup.ctx = ctx
 
 async def shutdown(ctx: dict[Any, Any]):
     """Runs during worker shutdown to cleanup resources."""

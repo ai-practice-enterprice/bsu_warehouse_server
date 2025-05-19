@@ -22,7 +22,7 @@ class String:
 
 # https://arq-docs.helpmanual.io/#retrying-jobs-and-cancellation
 # create the taskqueue functions ===========================================================
-async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coords: tuple[int, int]):
+async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coords: tuple[int, int], final_coords: tuple[int, int]):
     log: Logger = ctx["logger"]
     zenoh_pub: zenoh.Publisher = ctx["zenoh_pub"]
     log.info(f"\t ARQ : Attempting to clear package {package_id} from zone {zone_id}...")
@@ -39,62 +39,6 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
         # 1.2) Exception handling if no robot available => retry == max_retries
         if len(robots) == 0:
             raise Retry(defer=ctx['job_try'] * 5)
-            # if ctx['job_try'] < ctx['max_tries']: # If we're not at the max retries yet, retry with a delay
-            #     log.info(f"No robots available, retry {ctx['job_try']}/{ctx['max_tries']}")
-            #     raise Retry(defer=ctx['job_try'] * 5)
-            # else:
-            #     # We've reached max retries, verify if all robots are truly busy
-            #     log.info("Max retries reached. Verifying robot availability in the database...")
-                
-            #     # 1.2.1) Exception handling of no robot available => Query DB to verify
-            #     query_attempts = 0
-            #     max_query_attempts = 4  # Max number of query attempts
-                
-            #     while query_attempts < max_query_attempts:
-            #         try:
-            #             query_attempts += 1
-            #             count_result = await Robots.prisma().count(where={
-            #                 "robotStatus": True
-            #             })
-                        
-            #             robots_busy_count = await Robots.prisma().count(
-            #                 where={
-            #                     "AND": [
-            #                         {"robotStatus": True},
-            #                         {"robotAvailable": False}
-            #                     ]
-            #                 }
-            #             )
-                        
-            #             # Check if query response is OK
-            #             if count_result == robots_busy_count and count_result > 0:
-            #                 # All robots are busy - Query response OK but all robots busy
-            #                 log.warning("Distress call: All robots are busy!")
-                            
-            #                 # Send distress call
-            #                 await send_distress_call(http_client, log, "All robots are busy", is_full_shutdown=False)
-                            
-            #                 # Normal shutdown - set all zones to unavailable
-            #                 await normal_shutdown(log)
-            #                 return "distress call sent - all robots busy"
-                        
-            #             # Some robots should be available soon
-            #             log.info(f"Robots status: {robots_busy_count} busy out of {count_result} total robots")
-            #             # Retry one more time with a longer delay
-            #             raise Retry(defer=30)
-                        
-            #         except Exception as e:
-            #             log.error(f"Database query attempt {query_attempts} failed: {str(e)}")
-            #             if query_attempts >= max_query_attempts:
-            #                 # 1.2.1.1) Query does not work after 4 query tries => Distress call => full shutdown
-            #                 log.critical("Distress call: Database connectivity issues!")
-                            
-            #                 # Send distress call
-            #                 await send_distress_call(http_client, log, "Database connectivity issues", is_full_shutdown=True)
-                            
-            #                 # Full shutdown - set all zones to unavailable and flag DB as down
-            #                 await full_shutdown(log)
-            #                 return "distress call sent - database issues"
         
         # If we have robots available, randomly select one
         r1 = random.choice(robots)
@@ -138,7 +82,9 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
                     "robot_namespace": "/" + r1.robotNamespace, 
                     "package_id": package_id, 
                     "x": coords[0], 
-                    "y": coords[1]
+                    "y": coords[1],
+                    "final_x": final_coords[0],
+                    "final_y": final_coords[1],
                 })
             ).serialize()
             await asyncio.to_thread(zenoh_pub.put, payload)
@@ -216,6 +162,14 @@ async def check_for_package_to_move(ctx: dict):
                 }
             }
         )
+
+        storage_zones = await Zones.prisma().find_many(
+            where={"zoneTypes": {
+                "is": {"zoneTypeID": 3}
+            }},
+            include={"zoneTypes": True}
+        )
+        log.info(f"\t ARQ : Found {len(storage_zones)} storage zones.")
         
         log.info(f"\t ARQ : Found {len(new_orders)} new orders.")
         # Check if there's already an active order for package
@@ -227,12 +181,15 @@ async def check_for_package_to_move(ctx: dict):
                 }
             )
             
+            random_zone = random.choice(storage_zones)
+            
             if existing_orders == 0:
                 await arq_redis.enqueue_job(
                     "process_order",
                     zone_id=pm.ZoneID,
                     package_id=pm.PackageID,
-                    coords=(pm.zones.zoneX, pm.zones.zoneY)
+                    coords=(pm.zones.zoneX, pm.zones.zoneY),
+                    final_coords=(random_zone.zoneX, random_zone.zoneY)
                 )
     except Exception as e:
         log.exception(f"\t ARQ : Error checking for new orders: {e}")
@@ -323,7 +280,10 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
             if message["message_type"].upper() == "CONFIRMATION":
                 namespace = message["robot_namespace"][1:] if message["robot_namespace"][0] == "/" else message["robot_namespace"]
                 package_id = message["package_id"]
-                requests.patch(url=f"http://localhost:8000/frontend/robot/{namespace}/toggle")
+                requests.patch(url=f"http://localhost:8000/frontend/package/{package_id}/done")
+
+
+                # requests.patch(url=f"http://localhost:8000/frontend/robot/{namespace}/toggle")
 
         except requests.exceptions.RequestException as e:
             log.warning(f"\t ARQ : An error occurred during the request: {e}")
