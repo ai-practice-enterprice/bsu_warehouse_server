@@ -100,4 +100,8 @@ function initializeSSE() {
             initializeSSE();
         }, 5000);
     };
+
+    window.addEventListener('beforeunload', function() {
+        eventSource.close();
+    });
 }
