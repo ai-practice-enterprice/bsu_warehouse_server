@@ -33,7 +33,7 @@ class JinjaEmailTemplateBuilder:
   def build_email(self, **kwargs):
     if self.message_type == MessageType.INFO: email_path = os.path.join(self.script_path,"email_templates","emailInfo.html")
     elif self.message_type == MessageType.WARNING: email_path = os.path.join(self.script_path,"email_templates","emailWarning.html")
-    elif self.message_type == MessageType.REQUEST: email_path = os.path.join(self.script_path,"email_templates","emailInfo.html")
+    elif self.message_type == MessageType.REQUEST: email_path = os.path.join(self.script_path,"email_templates","emailRequest.html")
     elif self.message_type == MessageType.CONFIRMATION: email_path = os.path.join(self.script_path,"email_templates","emailConfirmation.html")
     else: email_path = os.path.join(self.script_path,"email_templates","emailInfo.html")
     
@@ -53,7 +53,7 @@ class JinjaEmailTemplateBuilder:
   def build_frontend_notification(self, **kwargs):
     if self.message_type == MessageType.INFO: email_path = os.path.join(self.script_path,"notification_templates","notification_info.html")
     elif self.message_type == MessageType.WARNING: email_path = os.path.join(self.script_path,"notification_templates","notification_warning.html")
-    elif self.message_type == MessageType.REQUEST: email_path = os.path.join(self.script_path,"notification_templates","notification_info.html")
+    elif self.message_type == MessageType.REQUEST: email_path = os.path.join(self.script_path,"notification_templates","notification_request.html")
     elif self.message_type == MessageType.CONFIRMATION: email_path = os.path.join(self.script_path,"notification_templates","notification_confirmation.html")
     else: email_path = os.path.join(self.script_path,"notification_templates","notification_info.html")
     

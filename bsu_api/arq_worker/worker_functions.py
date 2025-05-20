@@ -264,26 +264,46 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
                 """
             )
 
+            namespace = message["robot_namespace"][1:] if message["robot_namespace"][0] == "/" else message["robot_namespace"]
             message_type = MessageType.INFO
+
             if message["message_type"].upper() == "INFO": message_type = MessageType.INFO
             elif message["message_type"].upper() == "WARNING": message_type = MessageType.WARNING
             elif message["message_type"].upper() == "REQUEST": message_type = MessageType.REQUEST
             elif message["message_type"].upper() == "CONFIRMATION": message_type = MessageType.CONFIRMATION
             else: message_type = MessageType.INFO
-            log.info(f"\n\t ARQ : Message type: {message_type}\n")
 
-            builder = JinjaEmailTemplateBuilder(message_type)
 
-            send_email(builder,message)
-            send_notification(builder, message)
 
-            if message["message_type"].upper() == "CONFIRMATION":
-                namespace = message["robot_namespace"][1:] if message["robot_namespace"][0] == "/" else message["robot_namespace"]
+            if message_type == MessageType.CONFIRMATION:
                 package_id = message["package_id"]
+                status = message["status"]
+                status = message["status"]
+                log.info(f"""
+                    Requesting Updating robot: {namespace}
+                    \n\t status : {status}
+                """)
                 requests.patch(url=f"http://localhost:8000/frontend/package/{package_id}/done")
+                requests.patch(url=f"http://localhost:8000/frontend/robot/namespace/{namespace}/toggle",params={"status" : status})
 
+            elif message_type == MessageType.REQUEST:
+                status = message["status"]
+                log.info(f"""
+                    Requesting Updating robot: {namespace}
+                    \n\t status : {status}
+                """)
+                requests.patch(url=f"http://localhost:8000/frontend/namespace/robot/namespace/{namespace}/toggle",params={"status" : status})
 
-                # requests.patch(url=f"http://localhost:8000/frontend/robot/{namespace}/toggle")
+            elif message_type == MessageType.WARNING:
+                pass
+            elif message_type == MessageType.INFO:
+                pass
+            else:
+                pass
+        
+            builder = JinjaEmailTemplateBuilder(message_type)
+            send_notification(builder, message)
+            send_email(builder,message)
 
         except requests.exceptions.RequestException as e:
             log.warning(f"\t ARQ : An error occurred during the request: {e}")

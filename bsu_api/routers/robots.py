@@ -1,9 +1,10 @@
 import asyncio
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException , Request
 from pydantic import BaseModel, Field
 from prisma.models import Robots, RobotTypes
 from utils.logger import setup_logger
-from arq_worker.ArqWorker import startup
+from arq_worker.worker_functions import String
+import json
 log = setup_logger(__name__)
 router = APIRouter(prefix="/frontend", tags=["Frontend"])
 
@@ -15,6 +16,8 @@ class RobotCreationRequest(BaseModel):
     robot_namespace: str = Field(alias="robotNamespace")
     robot_status: bool = Field(alias="robotStatus")
 
+class RobotStatusUpdate(BaseModel):
+    status: bool
 
 
 # ======================== API endpoints for robot data ======================== #
@@ -81,7 +84,7 @@ async def update_robot(robot_id: int):
 
 
 @router.patch("/robot/{robot_id}/reset")
-async def reset_robot(robot_id: int):
+async def reset_robot(robot_id: int, request: Request):
     """
     Reset a robot to its initial state
     """
@@ -94,14 +97,28 @@ async def reset_robot(robot_id: int):
         data={"robotStatus": True, "robotAvailable": True},
     )
 
-    await asyncio.to_thread(startup.ctx["zenoh_pub_robot_reset"].put(f"robot/{robot.robotNamespace}/reset", "True"))
+    payload = String(
+        json.dumps({
+            "robot_namespace": "/" + updated_robot.robotNamespace,
+            "reset" : True,
+            # these could of course be changed via the frontend 
+            "direction": False,
+            "start_position": False,
+            "current_position": False,
+            "state": False,
+        })
+    ).serialize()
+
+    log.info(f"Sending to robot: {payload}")
+
+    await asyncio.to_thread(request.app.state.zenoh_reset_publisher.put,payload)
 
     log.info(f"Robot {robot_id} has been reset")
     return updated_robot
 
 
-@router.patch("/robot/{namespace}/toggle")
-async def update_robot_by_namespace(namespace: str, robot: RobotCreationRequest):
+@router.patch("/robot/namespace/{namespace}/toggle")
+async def update_robot_by_namespace(namespace: str, status: bool):
     """
     Update a robot by its namespace
     """
@@ -115,7 +132,7 @@ async def update_robot_by_namespace(namespace: str, robot: RobotCreationRequest)
     updated_robot = await Robots.prisma().update(
         where={"robotID": robot_id.robotID},
         data={
-            "robotAvailable": not robot.robot_status
+            "robotAvailable": status
         }
     )
 
