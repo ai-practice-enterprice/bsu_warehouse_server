@@ -43,3 +43,13 @@ ORIGINS = [
     "http://bsu-redis:6379",
 ]
 # URL configuration ================================================
+
+import zenoh
+import json
+zenoh_config = zenoh.open(zenoh.Config.from_json5(json.dumps({
+        "mode": "peer",
+        "connect": {
+            "endpoints": ["tcp/192.168.1.10:7447"]
+            # "endpoints": ["tcp/192.168.65.3:7447"]
+        }
+})))

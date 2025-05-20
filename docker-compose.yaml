@@ -69,6 +69,8 @@ services:
       - 8000
     ports:
       - 8000:8000
+    volumes:
+      - ./bsu_api:/app
     environment:
       - DATABASE_URL=mysql://aiUser:pwdAIteamDB@bsu-db-server:3306/bsu_warehouse_db
     depends_on:

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException , Query
 from map_gen.config import STORAGE
-from prisma.models import Packages , PackageMovement
+from prisma.models import Packages , PackageMovement, OrderMovement
 from typing import Annotated
 from utils.logger import setup_logger
 from datetime import datetime
@@ -82,3 +82,22 @@ async def read_package_movement_storage():
     return [{"date": row["insertDate"], "count": row["_count"]["_all"]} for row in pm]
 
 
+@router.patch("/package/{package_id}/done")
+async def update_package(package_id: int):
+    """
+    Update the status of a package
+    """
+    package = await Packages.prisma().find_unique(where={"packageID": package_id}, include={"OrderMovement": True})
+    if not package or not package.OrderMovement:
+        raise HTTPException(status_code=404, detail="Package not found")
+    
+    order_movement = package.OrderMovement[0]
+    if order_movement.status not in ["pending", "processing"]:
+        raise HTTPException(status_code=400, detail="Order movement is not in a valid state to be updated")
+
+    updated_package = await OrderMovement.prisma().update(
+        where={"OrderID": order_movement.OrderID},
+        data={"status": "done"}
+    )
+
+    return updated_package

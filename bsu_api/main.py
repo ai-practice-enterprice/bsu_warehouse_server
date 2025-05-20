@@ -15,7 +15,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # contains all URL configurations 
-from config import ORIGINS , ARQ_REDIS_SETTINGS
+from config import ORIGINS , ARQ_REDIS_SETTINGS , zenoh_config
 
 # contains all functions to generate fake DB
 from database.push_data import FakeDataGenerator
@@ -37,7 +37,7 @@ zenoh_session = None
 # however you must choose between the 2. as stated in the docs "It's all lifespan or all events, not both."
 # https://fastapi.tiangolo.com/advanced/events/#async-context-manager  
 @asynccontextmanager
-async def lifespan(_) -> AsyncIterator[None]:
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     log.info("Starting up")
 
     # Prisma requires a client. The client is a auto-generated and type-safe query builder that's tailored to your data. (as stated in the docs : https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/introduction)
@@ -83,6 +83,9 @@ async def lifespan(_) -> AsyncIterator[None]:
     await fake_date_gen.push()
     # add fake data to DB =====================================================
     
+    app.state.zenoh_config = zenoh_config
+    app.state.zenoh_reset_publisher = app.state.zenoh_config.declare_publisher("server/reset")
+
     yield
     log.info("Shutting down")
     log.info("Shutting down : Prisma query engine")

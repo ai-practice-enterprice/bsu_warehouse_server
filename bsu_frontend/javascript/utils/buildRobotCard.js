@@ -38,8 +38,11 @@ async function rowCard(robot) {
         <td><span class="${robot.robotStatus ? 'status-active' : 'status-inactive'}">${robot.robotStatus ? 'Active' : 'Inactive'}</span></td>
         <td>
             <button class="${robot.robotStatus ? 'danger-btn' : 'success-btn'}"
-                data-robot-id="${robot.robotID}">
+                data-robot-id="${robot.robotID}" data-action="toggle">
                 ${robot.robotStatus ? 'Deactivate' : 'Activate'}
+            </button>
+            <button class="warning-btn" data-robot-id="${robot.robotID}" data-action="reset">
+                Reset
             </button>
         </td>
     `;     
@@ -80,5 +83,26 @@ async function toggleStatus(target) {
         
         target.classList = 'danger-btn';
         target.textContent = 'Deactivate';
+    }
+}
+
+async function resetRobot(target) {
+    const robot_id = target.getAttribute("data-robot-id");
+    
+    if (confirm('Are you sure you want to reset this robot?')) {
+        const response = await fetch(`${serverURLPrefix}/robot/${robot_id}/reset`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            alert('Failed to reset robot');
+            return;
+        }
+        
+        // Reload the page to reflect the changes
+        location.reload();
     }
 }
