@@ -11,6 +11,7 @@
     <title>BSU : Zone & Path Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/bsu_general_style.css">
+    <link rel="stylesheet" href="../css/theme.css">
     <link rel="icon" type="image/x-icon" href="../assets/svg/bsu_ai_icon.svg">
 </head>
 <body>
@@ -181,6 +182,7 @@
     </div>
     
     <script src="../javascript/general_config.js"></script>
+    <script src="../javascript/utils/themeToggle.js"></script>
     <script src="../javascript/utils/buildZoneCard.js"></script>
     <script src="../javascript/page_specific/zones.js"></script>
 </body>
