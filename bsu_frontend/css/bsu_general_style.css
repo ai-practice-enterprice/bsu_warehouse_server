@@ -875,3 +875,19 @@ dialog {
     color: #c0392b;
     font-weight: bold;
 }
+
+.notification-header.request {
+    background-color: #7200ab;
+}
+
+.notification-content.request h2 {
+    color: #7200ab;
+}
+
+.notification-status.request,
+.notification-message.request {
+    background-color: #ffeaea;
+    border-left: 4px solid #7200ab;
+    color: #7200ab;
+    font-weight: bold;
+}

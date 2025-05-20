@@ -276,3 +276,8 @@
 [ 2 ]: Trying to access array offset on null in file /var/www/html/classes/Controller.php on line 250
 [ 2 ]: require_once(../public/error.php): Failed to open stream: No such file or directory in file /var/www/html/classes/Controller.php on line 143
 [ 2 ]: require_once(../public/error.php): Failed to open stream: No such file or directory in file /var/www/html/classes/Controller.php on line 143
+[ 2002 ]: Connection refused in file : /var/www/html/classes/Controller.php	 on line : 8	 at time : 2025-05-20 08:52:07 - 
+[ 1146 ]: Table 'bsu_warehouse_db.Users' doesn't exist in file : /var/www/html/classes/Controller.php	 on line : 259	 at time : 2025-05-20 09:30:43 - 
+[ 1146 ]: Table 'bsu_warehouse_db.Users' doesn't exist in file : /var/www/html/classes/Controller.php	 on line : 259	 at time : 2025-05-20 09:30:59 - 
+[ 2002 ]: Connection refused in file : /var/www/html/classes/Controller.php	 on line : 8	 at time : 2025-05-20 09:44:08 - 
+[ 2002 ]: Connection refused in file : /var/www/html/classes/Controller.php	 on line : 8	 at time : 2025-05-20 09:44:12 - 

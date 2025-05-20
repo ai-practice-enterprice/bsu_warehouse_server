@@ -53,12 +53,16 @@ async function getAllRobots() {
         row = await buildRobotCard(robot,"row");
         row.addEventListener("click",(e) => {
             if(e.target.getAttribute("data-robot-id")){
-                toggleStatus(e.target);
+                const action = e.target.getAttribute("data-action");
+                if (action === "toggle") {
+                    toggleStatus(e.target);
+                } else if (action === "reset") {
+                    resetRobot(e.target);
+                }
             }
         });
         robotTableBody.appendChild(row);
     });
-
 }
 
 window.onload = function() {
