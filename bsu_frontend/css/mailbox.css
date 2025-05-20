@@ -27,11 +27,6 @@
     overflow-x: auto;
 }
 
-.new-notification {
-    border-left: 4px solid #007bff;
-    animation: highlight 3s ease;
-}
-
 @keyframes highlight {
     0% {
         background-color: rgba(0, 123, 255, 0.1);
@@ -39,4 +34,9 @@
     100% {
         background-color: transparent;
     }
+}
+
+.new-notification {
+    border-left: 4px solid #007bff;
+    animation: highlight 3s ease;
 }

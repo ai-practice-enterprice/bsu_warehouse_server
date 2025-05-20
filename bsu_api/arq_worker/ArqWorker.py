@@ -9,7 +9,7 @@ import asyncio
 from arq import cron, create_pool, ArqRedis
 from prisma import Prisma 
 from typing import Any
-
+from config import zenoh_config
 from .worker_functions import check_for_package_to_move, process_order, receive_robot_notification, notify_zone_map
 from config import ARQ_REDIS_SETTINGS
 from utils.logger import setup_logger
@@ -31,15 +31,9 @@ async def startup(ctx: dict[str, Any]):
     await prisma_query_engine.connect()
     ctx["prisma"] = prisma_query_engine
 
-    ctx["zenoh"] = zenoh.open(zenoh.Config.from_json5(json.dumps({
-        "mode": "peer",
-        "connect": {
-            "endpoints": ["tcp/192.168.1.10:7447"]
-            # "endpoints": ["tcp/192.168.65.3:7447"]
-        }
-    })))
+    ctx["zenoh"] = zenoh_config
     ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("**/goal_position")
-    ctx["zenoh_pub_zone"] = ctx["zenoh"].declare_publisher("/server/map")
+    ctx["zenoh_pub_zone"] = ctx["zenoh"].declare_publisher("server/map")
     ctx["zenoh_rec_task"] = asyncio.create_task(asyncio.to_thread(receive_robot_notification, ctx["zenoh"], ctx["logger"]))
 
     # arq == asyn Redis queue 
