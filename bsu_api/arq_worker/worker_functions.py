@@ -292,7 +292,7 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
                     Requesting Updating robot: {namespace}
                     \n\t status : {status}
                 """)
-                requests.patch(url=f"http://localhost:8000/frontend/namespace/robot/namespace/{namespace}/toggle",params={"status" : status})
+                requests.patch(url=f"http://localhost:8000/frontend/robot/namespace/{namespace}/toggle",params={"status" : status})
 
             elif message_type == MessageType.WARNING:
                 pass
