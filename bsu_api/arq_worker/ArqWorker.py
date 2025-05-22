@@ -31,14 +31,15 @@ async def startup(ctx: dict[str, Any]):
     await prisma_query_engine.connect()
     ctx["prisma"] = prisma_query_engine
 
-    ctx["zenoh"] = zenoh_config
-    ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("**/goal_position")
-    ctx["zenoh_pub_zone"] = ctx["zenoh"].declare_publisher("server/map")
-    ctx["zenoh_rec_task"] = asyncio.create_task(asyncio.to_thread(receive_robot_notification, ctx["zenoh"], ctx["logger"]))
-
     # arq == asyn Redis queue 
     # => arq is the same as python's rq library but it uses asynchio on top of it
     ctx["arq_redis"] = await create_pool(ARQ_REDIS_SETTINGS)
+
+    ctx["zenoh"] = zenoh_config
+    ctx["zenoh_pub"] = ctx["zenoh"].declare_publisher("**/goal_position")
+    ctx["zenoh_pub_zone"] = ctx["zenoh"].declare_publisher("server/map")
+    ctx["zenoh_rec_task"] = asyncio.create_task(asyncio.to_thread(receive_robot_notification, ctx["zenoh"], ctx["logger"],ctx["arq_redis"]))
+
 
     ctx["logger"].info("------------ Worker start up complete ------------")
 
