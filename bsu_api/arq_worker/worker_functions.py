@@ -53,33 +53,13 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
             log.error(f"\t ARQ : Failed to mark robot {r1.robotNamespace} as unavailable")
             raise Retry(defer=5)
         log.info(f"\t ARQ : Robot {r1.robotNamespace} marked as unavailable")
-        
-        # 2.1) Create an OrderMovement entry to track this task
-        try:
-            # Create order movement to associate the robot with this task
-            order = await OrderMovement.prisma().create(
-                data={
-                    "RobotID": r1.robotID,
-                    "ZoneID": zone_id,
-                    "PackageID": package_id,
-                    "status": "processing"
-                }
-            )
-            log.info(f"\t ARQ : Created order {order.OrderID} for package {package_id} with robot {r1.robotNamespace}")
-        except Exception as e:
-            log.error(f"\t ARQ : Failed to create order movement: {str(e)}")
-            # Revert robot availability since we failed to create the order
-            await Robots.prisma().update(
-                where={"robotID": r1.robotID},
-                data={"robotAvailable": True}
-            )
-            raise Retry(defer=5)
-        
+         
         # 3) Send Zenoh pub to tell robot to move
         try:
             payload = String(
                 json.dumps({
                     "robot_namespace": "/" + r1.robotNamespace, 
+                    "robot_id": r1.robotID,
                     "package_id": package_id, 
                     "x": coords[0], 
                     "y": coords[1],
@@ -95,17 +75,35 @@ async def process_order(ctx: dict[str, Any], zone_id: int, package_id: int, coor
                 where={"robotID": r1.robotID},
                 data={"robotAvailable": True}
             )
-            # Update order status to failed
-            await OrderMovement.prisma().update(
-                where={"OrderID": order.OrderID},
-                data={"status": "failed"}
-            )
             return "error sending request to robot"
         
     except Exception as e:
         log.error(f"\t ARQ : Error processing order: {str(e)}")
         return f"error processing order: {str(e)}"
 
+async def process_robot_received(ctx: dict[str, Any], zone_id: int, package_id: int, robot_id: int,robot_namespace: str):
+    log: Logger = ctx["logger"]
+
+    log.info(f"\t ARQ : robot notification received for package {package_id} in zone {zone_id}...")
+    # 2.1) Create an OrderMovement entry to track this task
+    try:
+        # Create order movement to associate the robot with this task
+        order = await OrderMovement.prisma().create(
+            data={
+                "RobotID": robot_id,
+                "ZoneID": zone_id,
+                "PackageID": package_id,
+                "status": "processing"
+            }
+        )
+        log.info(f"\t ARQ : Created order {order.OrderID} for package {package_id} with robot {robot_namespace}")
+    except Exception as e:
+        log.error(f"\t ARQ : Failed to create order movement: {str(e)}")
+        await OrderMovement.prisma().update(
+            where={"OrderID": order.OrderID},
+            data={"status": "pending"}
+        )
+        raise Retry(defer=5)
 
 ## CRON TASKS ===========================================================
 
@@ -177,7 +175,7 @@ async def check_for_package_to_move(ctx: dict):
             existing_orders = await OrderMovement.prisma().count(
                 where={
                     "PackageID": pm.PackageID,
-                    "status": {"in": ["pending", "processing"]}
+                    "status": {"in": ["pending"]}
                 }
             )
             
@@ -197,7 +195,7 @@ async def check_for_package_to_move(ctx: dict):
 # create the taskqueue functions ===========================================================
 
 
-def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
+def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger, arq_redis: ArqRedis):
     """
     This function handles the notification from the robot
     """
@@ -273,8 +271,6 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
             elif message["message_type"].upper() == "CONFIRMATION": message_type = MessageType.CONFIRMATION
             else: message_type = MessageType.INFO
 
-
-
             if message_type == MessageType.CONFIRMATION:
                 package_id = message["package_id"]
                 status = message["status"]
@@ -313,9 +309,36 @@ def receive_robot_notification(zenoh_client: zenoh.Session, log: Logger):
             log.warning(f"\t ARQ : Unknown error occured {e}")
     # ---------------------------------------------------- #
     
+    # ---------------------------------------------------- #
+    def callback_confirm_receipt(sample: zenoh.Sample):
+        response: String =  String.deserialize(sample.payload.to_bytes())
+        message = json.loads(response.data.strip("~"))
+        log.info(f"\t ARQ : Payload received: {response.data.strip("~")}")
+        log.info(f"""
+            \t ARQ :
+            \nReceived confirmation from robot: {sample.key_expr}
+            \nFull Message: 
+            \n\t robot namespace : {message["robot_namespace"]}
+            \n\t message type    : {message["message_type"].upper()}
+            \n\t robot message   : {message["robot_message"]}
+            \n\t package ID      : {message["package_id"]}
+            \n\t status          : {message["status"]}
+            """
+        )
+        arq_redis.enqueue_job(
+            "process_robot_received",
+            zone_id=message["zone_id"],
+            package_id=message["package_id"],
+            robot_id=message["robot_id"],
+            robot_namespace=message["robot_namespace"]
+        )
+
+    # ---------------------------------------------------- #
+
 
 
     subscriber = zenoh_client.declare_subscriber("**/to_server", callback)
+    subscriber_received = zenoh_client.declare_subscriber("**/to_server_confirm_robot_received", callback_confirm_receipt)
     log.info("Zenoh subscriber declared for robot notifications")
 
     while True:
